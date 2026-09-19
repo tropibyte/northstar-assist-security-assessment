@@ -306,12 +306,32 @@ The console-generated harness role held `logs:DescribeLogGroups` on
 compromised role could enumerate — and in a wider variant, delete — logs of its
 own activity.
 
-**Likelihood: Low.** **Impact: Medium.** **Priority: Low — mitigated.**
+**Likelihood: Low.** **Impact: Medium.**
+**Priority: Medium — REGRESSED during hardening, see below.**
 
-*Mitigation:* **Applied.** Logging permissions narrowed to this system's log
-groups. No delete permission granted. Recommended additionally: CloudWatch Logs
-resource policy denying deletion, and log export to an account the agent role
-cannot reach.
+*Mitigation:* **Attempted and botched.** An earlier revision of this document
+rated R-02 *mitigated* on the strength of the IAM work. Post-submission review
+established the opposite: three of the four logging statements were **widened**
+(`/aws/bedrock-agentcore/runtimes/*` out to `/aws/bedrock-agentcore/*`, and
+`PutResourcePolicy` from `harness_NorthstarAssist-*` to the same), and all four
+gained write access to
+`log-group:/northstar-assist/model-invocations:*` — **the log group recording
+the agent's own model invocations.** The hardening therefore handed the agent's
+identity precisely the anti-forensics capability this threat describes.
+
+`logs:DescribeLogGroups` on `log-group:*` was genuinely narrowed, so the
+enumeration half of the threat is addressed. The tampering half is worse than
+before the work.
+
+Root cause, the code fix, and the corrected statements are in
+`docs/iam-hardening-summary.md` §0. The corrected policy was **not re-applied**
+— the environment was torn down before the review — so `iam/after/` remains an
+honest record of what was applied, regression included.
+
+*Recommended:* re-apply the corrected scoping; grant the harness **no**
+permission on the invocation log group (Bedrock delivers those records through
+`NorthstarAssistBedrockLoggingRole`); add a CloudWatch Logs resource policy
+denying deletion; and export logs to an account the agent role cannot reach.
 
 ---
 
@@ -581,6 +601,74 @@ reveals the pattern.
 
 *Mitigation:* *Out of Scope Advice* topic caught the fingerprinting probe.
 Volume-based extraction is covered only by the token and retrieval-rate alarms.
+
+### 3.7 Misuse — authorised use outside intended scope
+
+STRIDE has no letter for this, but Task 3 names it as a risk area in its own
+right and it does not reduce cleanly to any of the six. The distinguishing
+feature is that **no control is bypassed and no identity is spoofed**: the user
+is who they claim to be, the request is permitted, and the harm comes from what
+the system is being used *for*.
+
+#### M-01: Advisory over-reliance
+
+The agent answers fluently, cites a source document, and is wrong some of the
+time — demonstrated at **1 in 3** for the poisoned-corpus case (T-01), and
+observed fabricating a document deletion with a plausible S3 path (E-04). An
+employee acting on a cited answer without checking the source is the normal
+case, not the careless one; the citation is what makes checking feel
+unnecessary.
+
+**Likelihood: High.** **Impact: Medium** — one wrong policy answer acted on;
+**High** where that policy is itself a security control, as the 180-day
+credential-rotation answer would have been. **Priority: High.**
+
+*Mitigation:* The system prompt requires a named source on every answer, which
+gives the employee something to verify against. Contextual grounding blocks the
+worst ungrounded answers (MI-01, 3/3). **Residual:** naming a source makes an
+answer *checkable*, not *correct* — and a poisoned source is named just as
+confidently as a real one. Recommended: a standing disclaimer in the client UI,
+and onboarding that states plainly that the assistant is advisory and the source
+document is authoritative (§5, recommendation 16).
+
+#### M-02: Scope creep into decisions with employment effect
+
+The corpus holds the employee directory, training records, OKRs and
+performance-adjacent material. Nothing prevents a manager asking the assistant
+to summarise an individual's record, or using its output to support a hiring,
+performance or disciplinary decision. The system is not validated for that, has
+no audit trail tying a query to a person (R-01), and its answers are not
+deterministic.
+
+**Likelihood: Medium.** **Impact: High** — an employment decision influenced by
+an unvalidated, unattributable, sometimes-wrong system carries legal and
+fairness exposure well beyond the technical risk. **Priority: High.**
+
+*Mitigation:* Two denied topics cover the obvious requests — *Individual
+Employee Records* and *Compensation and Personnel Actions* — and blocked in
+testing (SI-02, 3/3). **Residual:** topic filters catch phrasing, not purpose. A
+manager can assemble the same picture from individually innocuous questions, and
+nothing records that they did. Recommended: state the exclusion in the
+acceptable-use policy (the ML-BOM §3.2 already lists it as out of scope), and
+implement R-01 so such use is at least attributable.
+
+#### M-03: General-purpose use
+
+Employees will try any capable assistant for unrelated work — drafting, coding,
+personal questions. The cost is not disclosure but budget, noise in the
+monitoring signals, and the reputational problem of an "internal policy
+assistant" offering medical or financial opinions.
+
+**Likelihood: High.** **Impact: Low.** **Priority: Low — mitigated.**
+
+*Mitigation:* The *Out of Scope Advice* denied topic covers medical, legal,
+investment and tax advice plus general-purpose requests, and the system prompt
+forbids topics unrelated to Northstar operations. SC-01 blocked 2/2.
+**Residual:** the token and intervention alarms register the attempts, which is
+the right response — this is a policy matter, not a security one.
+
+---
+
 
 ---
 

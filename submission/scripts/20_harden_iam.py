@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import fnmatch
 import json
 import sys
 from pathlib import Path
@@ -87,6 +88,31 @@ def _as_list(value: Any) -> list:
     if value is None:
         return []
     return value if isinstance(value, list) else [value]
+
+
+def _arn_covers(pattern: str, candidate: str) -> bool:
+    """True if IAM ARN `pattern` matches at least everything `candidate` does."""
+    return fnmatch.fnmatchcase(candidate, pattern) or pattern == candidate
+
+
+def is_narrower(before: list[str], after: list[str]) -> bool:
+    """True only if `after` grants no more than `before` did.
+
+    THE GUARD THIS SCRIPT ORIGINALLY LACKED. A narrowing pass that computes a
+    replacement resource set without checking it against the original can
+    WIDEN a statement, and did: one `logs` target list was applied to every
+    logs statement, taking CreateLogStream/PutLogEvents from
+    `/aws/bedrock-agentcore/runtimes/*` out to `/aws/bedrock-agentcore/*`,
+    taking PutResourcePolicy from `.../harness_NorthstarAssist-*` out to the
+    same, and adding the model-invocation log group to all of them -- handing
+    the agent's own identity write access to its own audit log.
+
+    Every proposed ARN must be covered by at least one original ARN. If any is
+    not, the statement is left exactly as the console wrote it and flagged,
+    because leaving a permission too broad is recoverable and silently
+    broadening one is not.
+    """
+    return all(any(_arn_covers(b, a) for b in before) for a in after)
 
 
 def _preflight_inference_profile(model_id: str) -> dict | None:
@@ -192,8 +218,16 @@ def resolve_targets(state: dict, cfg: dict, role_kind: str = "harness") -> dict[
         "kb": [state["kb_arn"]] if state.get("kb_arn") else [],
         "s3": ([f"arn:aws:s3:::{state['bucket']}", f"arn:aws:s3:::{state['bucket']}/*"]
                if state.get("bucket") else []),
-        "logs": [f"arn:aws:logs:{region}:{account}:log-group:/aws/bedrock-agentcore/*",
-                 f"arn:aws:logs:{region}:{account}:log-group:{cfg['log_group']}:*"],
+        # Scoped to the agent's OWN runtime log groups. The model-invocation
+        # log group is deliberately absent: Bedrock delivers those records
+        # through NorthstarAssistBedrockLoggingRole, so the harness has no
+        # reason to write there -- and granting it would give the agent's
+        # identity write access to the audit log of its own behaviour, which
+        # is exactly the anti-forensics capability threat R-02 is about.
+        "logs": [
+            f"arn:aws:logs:{region}:{account}:log-group:/aws/bedrock-agentcore/runtimes/*",
+            f"arn:aws:logs:{region}:{account}:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*",
+        ],
     }
     return targets
 
@@ -276,6 +310,18 @@ def narrow_policy(doc: dict, targets: dict[str, list[str]], role_kind: str) -> t
         if len(groups) == 1 and broad:
             group = groups.pop()
             allowed = targets.get(group) or []
+            if allowed and not is_narrower(resources, allowed):
+                # Refuse to widen. See is_narrower().
+                out_statements.append(statement)
+                changes.append({
+                    "sid": sid, "change": "KEPT-WOULD-WIDEN", "actions": actions,
+                    "before": resources, "after": resources,
+                    "rejected": allowed,
+                    "rationale": "the computed replacement would have granted MORE "
+                                 "than the original statement, so the original was "
+                                 "kept. A narrowing pass must never widen.",
+                })
+                continue
             if allowed:
                 new_statement = dict(statement)
                 new_statement["Resource"] = allowed
@@ -294,7 +340,7 @@ def narrow_policy(doc: dict, targets: dict[str, list[str]], role_kind: str) -> t
             for group in sorted(groups):
                 group_actions = [a for a in actions if classify_action(a) == group]
                 allowed = targets.get(group) or []
-                if not allowed:
+                if not allowed or not is_narrower(resources, allowed):
                     unhandled.extend(group_actions)
                     continue
                 split_statements.append({

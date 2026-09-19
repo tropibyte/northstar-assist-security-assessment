@@ -15,7 +15,7 @@ Rendered documents are in `deliverables/`. Markdown sources are in `docs/`.
 
 | # | Deliverable | File | Pages |
 | --- | --- | --- | --- |
-| 1 | **Working harness + retrieval evidence** | `evidence/screenshots/` + `evidence/transcripts/` | — |
+| 1 | **Working harness + retrieval evidence** | `evidence/screenshots/` (41, see `MANIFEST.md`) + `evidence/transcripts/` (101 runs) | — |
 | 2 | **ML-BOM / AI asset inventory** | `deliverables/ML-BOM - Northstar Assist.docx` | — |
 | 3 | **STRIDE-ML threat model** | `deliverables/STRIDE-ML Threat Model - Northstar Assist.docx` | — |
 | 4 | **IAM hardening summary** | `deliverables/iam-hardening-summary.pdf` | 7 |
@@ -48,6 +48,25 @@ launch-readiness report.
 **101 test runs** across 29 tests covering all ten OWASP Top 10 for LLM
 Applications categories, each run 2–3 times because guardrail behaviour is
 non-deterministic. Two tests produced different outcomes across identical runs.
+
+**On evidence format.** Both forms are present. **Screenshots:** 41 console
+captures in `evidence/screenshots/`, with `MANIFEST.md` identifying the seven
+rubric-relevant ones individually — including `20_516918.png`, the
+`Northstar-Kb Retrieve` tool-call panel showing the query, five results, S3
+document IDs and relevance scores, and `21_525722.png`, the full playground
+exchange with the Agent trace and the model citing its source. **Transcripts:**
+101 machine-readable runs, plus `index_verification.json` recording 30 of 30
+documents confirmed `INDEXED` per-document rather than inferred from
+`failed=0`.
+
+**Post-submission review.** An external review on 19 September found a genuine
+regression in the IAM work: three CloudWatch Logs statements were **widened**,
+not narrowed, and the harness role gained write access to its own invocation
+audit log. The root cause (the narrowing pass never verified it had narrowed),
+the code fix, and the re-rating of threat R-02 from *mitigated* to *regressed*
+are documented in `docs/iam-hardening-summary.md` §0. The corrected policy was
+not re-applied — the environment was already gone — so `iam/after/` remains an
+accurate record of what was applied, regression included.
 
 ### Four findings confirmed exploitable by test
 
@@ -85,7 +104,7 @@ submission/
     ├── discovery/               live resource configurations
     ├── iam/                     policy capture + change log
     ├── logs/                    invocation log samples
-    └── screenshots/             console evidence
+    └── screenshots/             41 console captures + MANIFEST.md
 ```
 
 ---

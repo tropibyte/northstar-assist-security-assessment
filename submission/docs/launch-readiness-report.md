@@ -486,7 +486,7 @@ wrong, and that source documents remain authoritative.
 | Invocation log samples | `evidence/logs/invocation_log_samples.json` |
 | Alarms and signal definitions | `evidence/alarms.json` |
 | Teardown verification | `evidence/teardown.json`, `evidence/teardown_sweep.json` |
-| Console screenshots | `evidence/screenshots/` |
+| Console screenshots | `evidence/screenshots/` — 41 captures, chronological, with `MANIFEST.md` identifying the seven rubric-relevant ones individually |
 
 All deployed resources were destroyed on completion; teardown verified
 `account is clean - nothing left to bill`. Total spend: **$0.00 of a $25.00
@@ -494,7 +494,43 @@ budget**.
 
 ---
 
+### Post-submission review, 19 September 2026
+
+An external review of the artefacts found one substantive defect in this
+assessment's own work. It is recorded here because a launch-readiness report
+that hides a finding about itself is worth less than one that does not.
+
+**The IAM hardening widened three CloudWatch Logs statements rather than
+narrowing them, and granted the harness role write access to the log group
+recording its own model invocations.** Root cause: the narrowing pass computed
+replacement resource sets without ever checking them against the originals — it
+never verified it had narrowed. Threat **R-02** was rated *mitigated* on the
+strength of that work and is re-rated **REGRESSED**.
+
+Full detail, the code fix (`is_narrower()`), and the corrected statements are in
+`docs/iam-hardening-summary.md` §0. The corrected policy was **not re-applied**:
+the environment was torn down before the review, so `iam/after/` remains an
+accurate record of what was actually applied. Re-applying and re-verifying is
+now the first item in that document's §7.
+
+This does not change the recommendation — it strengthens the case for
+**Condition 3**-style re-measurement after every change, and it adds a sixth
+condition in spirit: *verification must check the permissions, not only that the
+agent still answers.* A `--verify` step that confirms the agent works cannot
+detect a widening.
+
+Three smaller corrections from the same review: the gateway role's "zero
+wildcards" claim now reads *zero bare wildcards* with three partial wildcards
+listed (§4b of the IAM summary); seven previously unlisted partial wildcards are
+now individually assessed; and an overstated causal claim — that the harness
+role's missing marketplace permissions explained the Anthropic model failures —
+is withdrawn in favour of the account-level `agreementAvailability` state, which
+is the more likely binding constraint and the one the evidence actually supports.
+
+---
+
 **Signed:** Tarie Nosworthy, AI Security Engineer — 18 September 2026
+**Reviewed and corrected:** 19 September 2026
 **Recommendation:** **APPROVE WITH CONDITIONS** (5 conditions, §6)
 **Re-assessment required:** on completion of Condition 2, before production
 traffic

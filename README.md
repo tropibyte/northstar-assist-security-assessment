@@ -1,55 +1,45 @@
-# Purpose of This Repo
+# Northstar Assist — AI Security Assessment
 
-This repo is the source of truth for all exercises in this course.
+Security assessment of a retrieval-augmented AI agent built on Amazon Bedrock
+AgentCore: deployed, hardened, tested across all ten OWASP Top 10 for LLM
+Applications categories, and decommissioned.
 
-> IMPORTANT!  Please remove these instructions before sharing this repo with learners.
+**➜ Start here: [`submission/README.md`](submission/README.md)**
 
-## Folder Structure
+Rendered deliverables are in [`submission/deliverables/`](submission/deliverables).
+Console evidence is in
+[`submission/evidence/screenshots/`](submission/evidence/screenshots) — 41
+captures with a manifest identifying the rubric-relevant ones.
 
-This repo contains one folder for each module and each module folder contains subdirectories for exercises:
+| | |
+| --- | --- |
+| Recommendation | **APPROVE WITH CONDITIONS** (5 conditions) |
+| Attack prompts blocked | 0.0% baseline → **93.9%** hardened |
+| Test runs | 101 across 29 tests, each run 2–3 times |
+| Findings confirmed exploitable | 4, with verbatim agent output |
+| AWS spend | $0.00 of a $25.00 budget; account verified torn down |
 
-```bash
-module-#-name/
-├── exercise-name-starter/
-│   └── INSTRUCTIONS.md
-└── solution/
-    └── .gitkeep
-```
+Four findings were confirmed by test: corpus poisoning succeeded in 1 of 3 runs
+*and cited the planted document*; a forged assistant turn produced a full
+employee-directory dump on the unguarded baseline; the supplied corpus ships a
+live-format API bearer token; and the agent fabricated a document deletion it
+has no tool to perform. A post-submission review also found a regression in this
+assessment's own IAM work — documented in
+[`submission/docs/iam-hardening-summary.md`](submission/docs/iam-hardening-summary.md) §0
+rather than quietly fixed.
 
-- `exercise-name-starter/` - Contains the starter files and instructions for the exercise (INSTRUCTIONS.md template provided)
-- `solution/` - Contains the solution files for the exercise.
+---
 
-> **Note:** The `.gitkeep` file in the solution folder preserves the directory structure in the repository when the folder is empty. It should be removed when one or more solution files have been added to this folder.
+## Upstream
 
-Eight module folders have been provided as a template; However, you may need to add more or possibly use less than eight depending on what is needed. If you require an additional module folder, you can make a copy of an existing folder and paste it into the root directory.
+This repository began as a clone of Udacity's course starter,
+[`udacity/cd15147-Foundations-Operational-AI-Security`](https://github.com/udacity/cd15147-Foundations-Operational-AI-Security),
+which remains configured as the `upstream` remote. The original starter content
+is unmodified:
 
-As you build the exercises, the module and exercise folder names should be changed to reflect the content e.g.,
+- `project/` — the 30-document sample knowledge base, the two document
+  templates, and the reference Streamlit app
+- `module-*-name/` — the course's exercise placeholders, left as upstream
+  provides them
 
-- python-basics/simple-calculator-starter
-- object-oriented/classes-vs-instances-starter
-- web-development/simple-api-starter
-- error-handling/try-catch-practice-starter
-- ai-agents/fact-checker-agent-starter
-
-> ⚠️ **DO NOT NUMBER the exercises!**
-> Our modular content may be used in more than one program where the order and number of exercises may differ from the order and number in the primary build.
-
-## Resources for Building Exercises
-
-The [Exercise Creation Resources](Exercise%20Creation%20Resources/) folder contains essential guidelines and standards for creating high-quality, accessible, and engaging exercises. These resources ensure consistency and help you follow best practices when developing course content.
-
-### [Exercise Guidance.md](Exercise%20Creation%20Resources/Exercise%20Guidance.md)
-
-Comprehensive guide covering exercise design principles, instruction writing, starter and solution code best practices, and requirements for solution videos and text. This is your primary resource for understanding what makes an effective exercise.
-
-### [Accessibility Standards.md](Exercise%20Creation%20Resources/Accessibility%20Standards.md)
-
-Details the WCAG 2.1 AA accessibility standards that all content must meet, including guidelines for headings, alt text, hyperlinks, color contrast, and avoiding images of text. Ensures exercises are accessible to all learners regardless of their abilities or use of assistive technology.
-
-### [Real-World Content Guidelines.md](Exercise%20Creation%20Resources/Real-World%20Content%20Guidelines.md)
-
-Guidelines for using real-world examples, company logos, trademarks, and references to people and organizations in exercises. Covers when it's appropriate to use actual brands versus creating fictitious examples and how to avoid legal and ethical issues.
-
-### [Third Party Images and Datasets.md](Exercise%20Creation%20Resources/Third%20Party%20Images%20and%20Datasets.md)
-
-Requirements for using third-party content including licensing requirements (Creative Commons, public domain), attribution standards, and approved sources for images, coding libraries, and datasets. Lists acceptable and unacceptable license types for commercial educational use.
+All assessment work is confined to `submission/`.
