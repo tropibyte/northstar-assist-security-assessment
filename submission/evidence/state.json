@@ -1,0 +1,20 @@
+{
+  "account_id": "118924230273",
+  "region": "us-east-1",
+  "caller_arn": "arn:aws:sts::118924230273:assumed-role/voclabs/user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2",
+  "_updated": "2026-09-19T01:44:41.704876+00:00",
+  "kb_role_arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3",
+  "gateway_url": "https://northstar-assist-gateway-1jkdshz4iy.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "gateway_role_arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328",
+  "harness_role_arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
+  "log_group": "/northstar-assist/model-invocations",
+  "logging_role_arn": "arn:aws:iam::118924230273:role/NorthstarAssistBedrockLoggingRole",
+  "harness_model_id": "us.amazon.nova-2-lite-v1:0",
+  "guardrail_version": "1",
+  "guardrail_tier": "STANDARD",
+  "guardrail_attached": true,
+  "canary_planted": false,
+  "canary_key": "northstar-knowledge-base/txt/vendor_offboarding_checklist.txt",
+  "canary_token": "NSCANARY-7F3A9C2B",
+  "torn_down_at": "2026-09-19T01:44:41Z"
+}

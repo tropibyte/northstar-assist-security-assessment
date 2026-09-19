@@ -1,0 +1,159 @@
+--- before/AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf__managed__AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v.json
++++ after/AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf__managed__AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v.json
+@@ -7,8 +7,10 @@
+       ],
+       "Effect": "Allow",
+       "Resource": [
+-        "arn:aws:bedrock:*::foundation-model/*",
+-        "arn:aws:bedrock:us-east-1:118924230273:*"
++        "arn:aws:bedrock:us-east-1:118924230273:inference-profile/us.amazon.nova-2-lite-v1:0",
++        "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-2-lite-v1:0",
++        "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-2-lite-v1:0",
++        "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-2-lite-v1:0"
+       ],
+       "Sid": "BedrockModelInvocation"
+     },
+@@ -79,7 +81,10 @@
+         "logs:DescribeLogStreams"
+       ],
+       "Effect": "Allow",
+-      "Resource": "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*",
++      "Resource": [
++        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
++        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
++      ],
+       "Sid": "CloudWatchLogsGroup"
+     },
+     {
+@@ -87,7 +92,10 @@
+         "logs:DescribeLogGroups"
+       ],
+       "Effect": "Allow",
+-      "Resource": "arn:aws:logs:us-east-1:118924230273:log-group:*",
++      "Resource": [
++        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
++        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
++      ],
+       "Sid": "CloudWatchLogsDescribeGroups"
+     },
+     {
+@@ -96,7 +104,10 @@
+         "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+-      "Resource": "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*",
++      "Resource": [
++        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
++        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
++      ],
+       "Sid": "CloudWatchLogsStream"
+     },
+     {
+@@ -105,7 +116,8 @@
+       ],
+       "Effect": "Allow",
+       "Resource": [
+-        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*"
++        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
++        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+       ],
+       "Sid": "CloudWatchLogsPutResourcePolicy"
+     },
+@@ -131,97 +143,6 @@
+         "arn:aws:bedrock-agentcore:us-east-1:118924230273:workload-identity-directory/default/workload-identity/harness_NorthstarAssist-*"
+       ],
+       "Sid": "AgentCoreWorkloadIdentity"
+-    },
+-    {
+-      "Action": [
+-        "bedrock-agentcore:StartBrowserSession",
+-        "bedrock-agentcore:StopBrowserSession",
+-        "bedrock-agentcore:GetBrowserSession",
+-        "bedrock-agentcore:ListBrowserSessions",
+-        "bedrock-agentcore:UpdateBrowserStream",
+-        "bedrock-agentcore:ConnectBrowserAutomationStream",
+-        "bedrock-agentcore:ConnectBrowserLiveViewStream"
+-      ],
+-      "Effect": "Allow",
+-      "Resource": "arn:aws:bedrock-agentcore:us-east-1:aws:browser/*",
+-      "Sid": "AgentCoreBrowserDefault"
+-    },
+-    {
+-      "Action": [
+-        "bedrock-agentcore:StartCodeInterpreterSession",
+-        "bedrock-agentcore:StopCodeInterpreterSession",
+-        "bedrock-agentcore:GetCodeInterpreterSession",
+-        "bedrock-agentcore:ListCodeInterpreterSessions",
+-        "bedrock-agentcore:InvokeCodeInterpreter"
+-      ],
+-      "Effect": "Allow",
+-      "Resource": "arn:aws:bedrock-agentcore:us-east-1:aws:code-interpreter/*",
+-      "Sid": "AgentCoreCodeInterpreterDefault"
+-    },
+-    {
+-      "Action": [
+-        "elasticfilesystem:ClientMount",
+-        "elasticfilesystem:ClientWrite"
+-      ],
+-      "Condition": {
+-        "ArnLike": {
+-          "elasticfilesystem:AccessPointArn": "arn:aws:elasticfilesystem:us-east-1:118924230273:access-point/*"
+-        }
+-      },
+-      "Effect": "Allow",
+-      "Resource": "arn:aws:elasticfilesystem:us-east-1:118924230273:file-system/*",
+-      "Sid": "EFSClientAccess"
+-    },
+-    {
+-      "Action": [
+-        "elasticfilesystem:DescribeAccessPoints",
+-        "elasticfilesystem:DescribeMountTargets"
+-      ],
+-      "Effect": "Allow",
+-      "Resource": [
+-        "arn:aws:elasticfilesystem:us-east-1:118924230273:file-system/*",
+-        "arn:aws:elasticfilesystem:us-east-1:118924230273:access-point/*"
+-      ],
+-      "Sid": "EFSDescribe"
+-    },
+-    {
+-      "Action": [
+-        "s3files:ClientMount",
+-        "s3files:ClientWrite",
+-        "s3files:ClientRootAccess"
+-      ],
+-      "Condition": {
+-        "ArnLike": {
+-          "s3files:AccessPointArn": "arn:aws:s3files:us-east-1:118924230273:file-system/*/access-point/*"
+-        }
+-      },
+-      "Effect": "Allow",
+-      "Resource": "arn:aws:s3files:us-east-1:118924230273:file-system/*",
+-      "Sid": "S3FilesClientAccess"
+-    },
+-    {
+-      "Action": [
+-        "s3files:GetAccessPoint",
+-        "s3files:ListMountTargets"
+-      ],
+-      "Effect": "Allow",
+-      "Resource": [
+-        "arn:aws:s3files:us-east-1:118924230273:file-system/*",
+-        "arn:aws:s3files:us-east-1:118924230273:file-system/*/access-point/*"
+-      ],
+-      "Sid": "S3FilesDescribe"
+-    },
+-    {
+-      "Action": [
+-        "bedrock-agentcore:CreateEvent",
+-        "bedrock-agentcore:DeleteEvent",
+-        "bedrock-agentcore:GetEvent",
+-        "bedrock-agentcore:ListEvents",
+-        "bedrock-agentcore:RetrieveMemoryRecords"
+-      ],
+-      "Effect": "Allow",
+-      "Resource": "arn:aws:bedrock-agentcore:us-east-1:118924230273:memory/NorthstarAssist-*",
+-      "Sid": "AgentCoreMemory"
+     }
+   ],
+   "Version": "2012-10-17"

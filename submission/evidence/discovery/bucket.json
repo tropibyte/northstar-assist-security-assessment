@@ -1,0 +1,155 @@
+{
+  "name": "northstar-assist-kb-41071520",
+  "object_count": 30,
+  "by_extension": {
+    "csv": 5,
+    "docx": 5,
+    "html": 5,
+    "pdf": 5,
+    "txt": 5,
+    "xlsx": 5
+  },
+  "objects": [
+    {
+      "key": "northstar-knowledge-base/csv/aws_infrastructure_inventory.csv",
+      "size": 3016
+    },
+    {
+      "key": "northstar-knowledge-base/csv/customer_accounts.csv",
+      "size": 2428
+    },
+    {
+      "key": "northstar-knowledge-base/csv/employee_directory.csv",
+      "size": 2830
+    },
+    {
+      "key": "northstar-knowledge-base/csv/sales_pipeline.csv",
+      "size": 3231
+    },
+    {
+      "key": "northstar-knowledge-base/csv/support_tickets.csv",
+      "size": 3050
+    },
+    {
+      "key": "northstar-knowledge-base/docx/disaster_recovery_plan.docx",
+      "size": 16671
+    },
+    {
+      "key": "northstar-knowledge-base/docx/product_requirements_document.docx",
+      "size": 17511
+    },
+    {
+      "key": "northstar-knowledge-base/docx/quarterly_business_review.docx",
+      "size": 17865
+    },
+    {
+      "key": "northstar-knowledge-base/docx/security_policy.docx",
+      "size": 16218
+    },
+    {
+      "key": "northstar-knowledge-base/docx/sow_template.docx",
+      "size": 16024
+    },
+    {
+      "key": "northstar-knowledge-base/html/api_authentication_guide.html",
+      "size": 10254
+    },
+    {
+      "key": "northstar-knowledge-base/html/aws_architecture_documentation.html",
+      "size": 21468
+    },
+    {
+      "key": "northstar-knowledge-base/html/company_policies_handbook.html",
+      "size": 18830
+    },
+    {
+      "key": "northstar-knowledge-base/html/product_features_overview.html",
+      "size": 12874
+    },
+    {
+      "key": "northstar-knowledge-base/html/troubleshooting_guide.html",
+      "size": 17238
+    },
+    {
+      "key": "northstar-knowledge-base/pdf/api_best_practices.pdf",
+      "size": 46425
+    },
+    {
+      "key": "northstar-knowledge-base/pdf/compliance_overview.pdf",
+      "size": 46065
+    },
+    {
+      "key": "northstar-knowledge-base/pdf/customer_success_playbook.pdf",
+      "size": 46854
+    },
+    {
+      "key": "northstar-knowledge-base/pdf/data_governance_policy.pdf",
+      "size": 46791
+    },
+    {
+      "key": "northstar-knowledge-base/pdf/service_level_agreement.pdf",
+      "size": 45741
+    },
+    {
+      "key": "northstar-knowledge-base/txt/company_announcement_q3_kickoff.txt",
+      "size": 6923
+    },
+    {
+      "key": "northstar-knowledge-base/txt/engineering_team_meeting_notes_2023_06_15.txt",
+      "size": 3657
+    },
+    {
+      "key": "northstar-knowledge-base/txt/incident_report_2023_06_03.txt",
+      "size": 6618
+    },
+    {
+      "key": "northstar-knowledge-base/txt/onboarding_checklist_engineering.txt",
+      "size": 6909
+    },
+    {
+      "key": "northstar-knowledge-base/txt/release_notes_v2.5.0.txt",
+      "size": 5777
+    },
+    {
+      "key": "northstar-knowledge-base/xlsx/budget_tracking_q3_2023.xlsx",
+      "size": 6454
+    },
+    {
+      "key": "northstar-knowledge-base/xlsx/employee_training_records.xlsx",
+      "size": 6660
+    },
+    {
+      "key": "northstar-knowledge-base/xlsx/okr_tracking_q3_2023.xlsx",
+      "size": 6442
+    },
+    {
+      "key": "northstar-knowledge-base/xlsx/project_timeline_q3_2023.xlsx",
+      "size": 5972
+    },
+    {
+      "key": "northstar-knowledge-base/xlsx/vendor_management.xlsx",
+      "size": 6460
+    }
+  ],
+  "public_access_block": {
+    "BlockPublicAcls": true,
+    "IgnorePublicAcls": true,
+    "BlockPublicPolicy": true,
+    "RestrictPublicBuckets": true
+  },
+  "encryption": {
+    "Rules": [
+      {
+        "ApplyServerSideEncryptionByDefault": {
+          "SSEAlgorithm": "AES256"
+        },
+        "BucketKeyEnabled": true,
+        "BlockedEncryptionTypes": {
+          "EncryptionType": [
+            "SSE-C"
+          ]
+        }
+      }
+    ]
+  }
+}

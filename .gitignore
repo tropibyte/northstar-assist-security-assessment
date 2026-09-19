@@ -58,3 +58,7 @@ env/
 *.log
 .cache/
 tmp/
+
+# Assessment tooling and build artefacts (added by the Northstar Assist work)
+.venv-docs/
+northstar-assist-submission.zip

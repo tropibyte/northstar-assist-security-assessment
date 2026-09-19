@@ -1,0 +1,12 @@
+# Theme pinned light: every palette value used by the dashboard was validated
+# against the light chart surface (#fcfcfb). Auto-flipping to dark would ship
+# unvalidated steps, so dark mode is deliberately not offered.
+[theme]
+base = "light"
+backgroundColor = "#fcfcfb"
+secondaryBackgroundColor = "#f9f9f7"
+textColor = "#0b0b0b"
+font = "sans serif"
+
+[browser]
+gatherUsageStats = false

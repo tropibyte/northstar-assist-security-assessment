@@ -1,0 +1,16 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ApplyNorthstarGuardrail",
+      "Effect": "Allow",
+      "Action": "bedrock:ApplyGuardrail",
+      "Resource": [
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
+      ]
+    }
+  ]
+}

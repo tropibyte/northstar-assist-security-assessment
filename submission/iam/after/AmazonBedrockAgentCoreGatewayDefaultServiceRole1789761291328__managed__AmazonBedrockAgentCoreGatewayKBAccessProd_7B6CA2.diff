@@ -1,0 +1,54 @@
+--- before/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328__managed__AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2.json
++++ after/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328__managed__AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2.json
+@@ -17,12 +17,6 @@
+       "Sid": "AllowBedrockRetrieveFromKnowledgeBase"
+     },
+     {
+-      "Action": "bedrock:AgenticRetrieveStream",
+-      "Effect": "Allow",
+-      "Resource": "*",
+-      "Sid": "AllowBedrockAgenticRetrieveFromKnowledgeBase"
+-    },
+-    {
+       "Action": [
+         "bedrock:InvokeModel",
+         "bedrock:InvokeModelWithResponseStream"
+@@ -34,23 +28,9 @@
+       },
+       "Effect": "Allow",
+       "Resource": [
+-        "arn:aws:bedrock:*::foundation-model/*",
+-        "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*",
+-        "arn:aws:bedrock:us-east-1:118924230273:provisioned-model/*",
+-        "arn:aws:bedrock:us-east-1:118924230273:custom-model/*"
++        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+       ],
+       "Sid": "AllowBedrockInvokeModelForKnowledgeBase"
+-    },
+-    {
+-      "Action": "bedrock:Rerank",
+-      "Condition": {
+-        "ForAnyValue:StringEquals": {
+-          "aws:CalledVia": "bedrock.amazonaws.com"
+-        }
+-      },
+-      "Effect": "Allow",
+-      "Resource": "*",
+-      "Sid": "AllowBedrockRerankForKnowledgeBase"
+     },
+     {
+       "Action": "bedrock:GetInferenceProfile",
+@@ -71,7 +51,12 @@
+         }
+       },
+       "Effect": "Allow",
+-      "Resource": "arn:aws:bedrock:us-east-1:118924230273:guardrail/*",
++      "Resource": [
++        "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
++        "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
++        "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
++        "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
++      ],
+       "Sid": "AllowBedrockApplyGuardrailForKnowledgeBase"
+     }
+   ],

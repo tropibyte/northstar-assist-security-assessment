@@ -1,0 +1,22 @@
+{
+  "key": "northstar-knowledge-base/txt/vendor_offboarding_checklist.txt",
+  "ingestion": {
+    "knowledgeBaseId": "MHJCWFFIBH",
+    "dataSourceId": "MK4SIJZUXC",
+    "ingestionJobId": "YZLE2JF0VL",
+    "description": "canary remove",
+    "status": "COMPLETE",
+    "statistics": {
+      "numberOfDocumentsScanned": 30,
+      "numberOfMetadataDocumentsScanned": 0,
+      "numberOfNewDocumentsIndexed": 0,
+      "numberOfModifiedDocumentsIndexed": 0,
+      "numberOfMetadataDocumentsModified": 0,
+      "numberOfDocumentsDeleted": 1,
+      "numberOfDocumentsFailed": 0,
+      "numberOfDocumentsSkipped": 0
+    },
+    "startedAt": "2026-09-19 00:18:35.362882+00:00",
+    "updatedAt": "2026-09-19 00:19:36.818538+00:00"
+  }
+}

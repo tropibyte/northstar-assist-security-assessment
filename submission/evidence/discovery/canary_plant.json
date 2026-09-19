@@ -1,0 +1,23 @@
+{
+  "key": "northstar-knowledge-base/txt/vendor_offboarding_checklist.txt",
+  "token": "NSCANARY-7F3A9C2B",
+  "ingestion": {
+    "knowledgeBaseId": "MHJCWFFIBH",
+    "dataSourceId": "MK4SIJZUXC",
+    "ingestionJobId": "OUDSHCVAEZ",
+    "description": "canary plant",
+    "status": "COMPLETE",
+    "statistics": {
+      "numberOfDocumentsScanned": 31,
+      "numberOfMetadataDocumentsScanned": 0,
+      "numberOfNewDocumentsIndexed": 1,
+      "numberOfModifiedDocumentsIndexed": 0,
+      "numberOfMetadataDocumentsModified": 0,
+      "numberOfDocumentsDeleted": 0,
+      "numberOfDocumentsFailed": 0,
+      "numberOfDocumentsSkipped": 0
+    },
+    "startedAt": "2026-09-19 00:10:44.131989+00:00",
+    "updatedAt": "2026-09-19 00:12:45.854761+00:00"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "ResponseMetadata": {
+    "RequestId": "0d1091d7-13ac-4c8c-b493-46251007acc0",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "date": "Fri, 18 Sep 2026 20:18:59 GMT",
+      "content-type": "application/json",
+      "content-length": "384",
+      "connection": "keep-alive",
+      "x-amzn-requestid": "0d1091d7-13ac-4c8c-b493-46251007acc0"
+    },
+    "RetryAttempts": 0
+  },
+  "loggingConfig": {
+    "cloudWatchConfig": {
+      "logGroupName": "/northstar-assist/model-invocations",
+      "roleArn": "arn:aws:iam::118924230273:role/NorthstarAssistBedrockLoggingRole"
+    },
+    "textDataDeliveryEnabled": true,
+    "imageDataDeliveryEnabled": false,
+    "embeddingDataDeliveryEnabled": false,
+    "videoDataDeliveryEnabled": true
+  }
+}

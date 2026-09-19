@@ -1,0 +1,11 @@
+{
+  "deleted": [
+    "log group /aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-bLGD1JFib7-DEFAULT",
+    "model invocation logging configuration"
+  ],
+  "skipped": [
+    "inline policy AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf/NorthstarAssistApplyGuardrail"
+  ],
+  "failed": [],
+  "remaining": {}
+}

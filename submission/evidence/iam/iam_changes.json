@@ -1,0 +1,398 @@
+{
+  "harness": {
+    "NorthstarAssistApplyGuardrail": [],
+    "AmazonBedrockAgentCoreHarnessGatewayPolicy_lh6if (managed)": [],
+    "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v (managed)": [
+      {
+        "sid": "BedrockModelInvocation",
+        "change": "NARROWED",
+        "actions": [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ],
+        "before": [
+          "arn:aws:bedrock:*::foundation-model/*",
+          "arn:aws:bedrock:us-east-1:118924230273:*"
+        ],
+        "after": [
+          "arn:aws:bedrock:us-east-1:118924230273:inference-profile/us.amazon.nova-2-lite-v1:0",
+          "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-2-lite-v1:0",
+          "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-2-lite-v1:0",
+          "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-2-lite-v1:0"
+        ],
+        "rationale": "the harness invokes exactly one inference profile; granting foundation-model/* would let a compromised role invoke every model in the account, including more capable and more expensive ones."
+      },
+      {
+        "sid": "BedrockMantleCallWithBearerToken",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "bedrock-mantle:CallWithBearerToken"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      },
+      {
+        "sid": "EcrPublicTokenAccess",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "ecr-public:GetAuthorizationToken"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      },
+      {
+        "sid": "StsForEcrPublicPull",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "sts:GetServiceBearerToken"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      },
+      {
+        "sid": "EcrManagedImageToken",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "ecr:GetAuthorizationToken"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      },
+      {
+        "sid": "XRayTracingAccess",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords",
+          "xray:GetSamplingRules",
+          "xray:GetSamplingTargets"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      },
+      {
+        "sid": "CloudWatchLogsGroup",
+        "change": "NARROWED",
+        "actions": [
+          "logs:CreateLogGroup",
+          "logs:DescribeLogStreams"
+        ],
+        "before": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*"
+        ],
+        "after": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+        ],
+        "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
+      },
+      {
+        "sid": "CloudWatchLogsDescribeGroups",
+        "change": "NARROWED",
+        "actions": [
+          "logs:DescribeLogGroups"
+        ],
+        "before": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:*"
+        ],
+        "after": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+        ],
+        "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
+      },
+      {
+        "sid": "CloudWatchLogsStream",
+        "change": "NARROWED",
+        "actions": [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "before": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
+        ],
+        "after": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+        ],
+        "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
+      },
+      {
+        "sid": "CloudWatchLogsPutResourcePolicy",
+        "change": "NARROWED",
+        "actions": [
+          "logs:PutResourcePolicy"
+        ],
+        "before": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*"
+        ],
+        "after": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+        ],
+        "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
+      },
+      {
+        "sid": "CloudWatchMetricsPublish",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "cloudwatch:PutMetricData"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      },
+      {
+        "sid": "AgentCoreBrowserDefault",
+        "change": "REMOVED",
+        "feature": "browser",
+        "actions": [
+          "bedrock-agentcore:StartBrowserSession",
+          "bedrock-agentcore:StopBrowserSession",
+          "bedrock-agentcore:GetBrowserSession",
+          "bedrock-agentcore:ListBrowserSessions",
+          "bedrock-agentcore:UpdateBrowserStream",
+          "bedrock-agentcore:ConnectBrowserAutomationStream",
+          "bedrock-agentcore:ConnectBrowserLiveViewStream"
+        ],
+        "rationale": "Unused capability: the Browser tool is switched off on the harness. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "AgentCoreCodeInterpreterDefault",
+        "change": "REMOVED",
+        "feature": "code_interpreter",
+        "actions": [
+          "bedrock-agentcore:StartCodeInterpreterSession",
+          "bedrock-agentcore:StopCodeInterpreterSession",
+          "bedrock-agentcore:GetCodeInterpreterSession",
+          "bedrock-agentcore:ListCodeInterpreterSessions",
+          "bedrock-agentcore:InvokeCodeInterpreter"
+        ],
+        "rationale": "Unused capability: the Code Interpreter tool is switched off on the harness. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "EFSClientAccess",
+        "change": "REMOVED",
+        "feature": "filesystem",
+        "actions": [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite"
+        ],
+        "rationale": "Unused capability: no EFS or S3 file-system mount is configured. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "EFSDescribe",
+        "change": "REMOVED",
+        "feature": "filesystem",
+        "actions": [
+          "elasticfilesystem:DescribeAccessPoints",
+          "elasticfilesystem:DescribeMountTargets"
+        ],
+        "rationale": "Unused capability: no EFS or S3 file-system mount is configured. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "S3FilesClientAccess",
+        "change": "REMOVED",
+        "feature": "filesystem",
+        "actions": [
+          "s3files:ClientMount",
+          "s3files:ClientWrite",
+          "s3files:ClientRootAccess"
+        ],
+        "rationale": "Unused capability: no EFS or S3 file-system mount is configured. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "S3FilesDescribe",
+        "change": "REMOVED",
+        "feature": "filesystem",
+        "actions": [
+          "s3files:GetAccessPoint",
+          "s3files:ListMountTargets"
+        ],
+        "rationale": "Unused capability: no EFS or S3 file-system mount is configured. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "AgentCoreMemory",
+        "change": "REMOVED",
+        "feature": "memory",
+        "actions": [
+          "bedrock-agentcore:CreateEvent",
+          "bedrock-agentcore:DeleteEvent",
+          "bedrock-agentcore:GetEvent",
+          "bedrock-agentcore:ListEvents",
+          "bedrock-agentcore:RetrieveMemoryRecords"
+        ],
+        "rationale": "Unused capability: Memory is disabled on the harness, so there are no events to read or write. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      }
+    ]
+  },
+  "gateway": {
+    "AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52 (managed)": [
+      {
+        "sid": "GetGateway",
+        "change": "NARROWED",
+        "actions": [
+          "bedrock-agentcore:GetGateway"
+        ],
+        "before": [
+          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-*"
+        ],
+        "after": [
+          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
+          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy/*"
+        ],
+        "rationale": "the harness has one gateway; invoking arbitrary gateways would reach tools and data this agent was never authorised for."
+      }
+    ],
+    "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2 (managed)": [
+      {
+        "sid": "AllowBedrockAgenticRetrieveFromKnowledgeBase",
+        "change": "REMOVED",
+        "feature": "agentic_retrieval",
+        "actions": [
+          "bedrock:AgenticRetrieveStream"
+        ],
+        "rationale": "Unused capability: the gateway target uses Standard retrieval, not Agentic retrieval. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "AllowBedrockInvokeModelForKnowledgeBase",
+        "change": "NARROWED",
+        "actions": [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ],
+        "before": [
+          "arn:aws:bedrock:*::foundation-model/*",
+          "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*",
+          "arn:aws:bedrock:us-east-1:118924230273:provisioned-model/*",
+          "arn:aws:bedrock:us-east-1:118924230273:custom-model/*"
+        ],
+        "after": [
+          "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+        ],
+        "rationale": "the harness invokes exactly one inference profile; granting foundation-model/* would let a compromised role invoke every model in the account, including more capable and more expensive ones."
+      },
+      {
+        "sid": "AllowBedrockRerankForKnowledgeBase",
+        "change": "REMOVED",
+        "feature": "agentic_retrieval",
+        "actions": [
+          "bedrock:Rerank"
+        ],
+        "rationale": "Unused capability: the gateway target uses Standard retrieval, not Agentic retrieval. A permission with no caller is pure attack surface - it is what a compromised role reaches for."
+      },
+      {
+        "sid": "AllowBedrockApplyGuardrailForKnowledgeBase",
+        "change": "NARROWED",
+        "actions": [
+          "bedrock:ApplyGuardrail"
+        ],
+        "before": [
+          "arn:aws:bedrock:us-east-1:118924230273:guardrail/*"
+        ],
+        "after": [
+          "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+          "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
+          "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
+          "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
+        ],
+        "rationale": "ApplyGuardrail on * lets the role apply any guardrail in the account, including a permissive one it creates or finds, which defeats the control it is supposed to enforce."
+      }
+    ]
+  },
+  "knowledge_base": {
+    "AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3 (managed)": [
+      {
+        "sid": "MarketplaceOperationsFromBedrockFor3pModels",
+        "change": "ACTION-REMOVED",
+        "actions": [
+          "aws-marketplace:Unsubscribe"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "cancels foundation-model subscriptions for the whole account. The knowledge base role needs to read and create subscriptions to use a model; it never needs to revoke one, and revoking one is an availability attack on every workload in the account."
+      },
+      {
+        "sid": "MarketplaceOperationsFromBedrockFor3pModels",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "aws-marketplace:Subscribe",
+          "aws-marketplace:ViewSubscriptions"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      }
+    ],
+    "AmazonBedrockCloudWatchPolicyForKnowledgeBase_pcpa3 (managed)": [
+      {
+        "sid": "CloudWatchWritePermissionStatement",
+        "change": "UNCHANGED-WILDCARD",
+        "actions": [
+          "cloudwatch:PutMetricData"
+        ],
+        "before": [
+          "*"
+        ],
+        "after": [
+          "*"
+        ],
+        "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
+      }
+    ],
+    "AmazonBedrockS3PolicyForKnowledgeBase_pcpa3 (managed)": [
+      {
+        "sid": "S3GetObjectStatement",
+        "change": "NARROWED",
+        "actions": [
+          "s3:GetObject"
+        ],
+        "before": [
+          "arn:aws:s3:::northstar-assist-kb-41071520/*"
+        ],
+        "after": [
+          "arn:aws:s3:::northstar-assist-kb-41071520",
+          "arn:aws:s3:::northstar-assist-kb-41071520/*"
+        ],
+        "rationale": "read access limited to the document bucket instead of every bucket the account holds."
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "bucket": "northstar-assist-kb-41071520",
+  "kb_id": "MHJCWFFIBH",
+  "ingestion_statistics": {
+    "numberOfDocumentsScanned": 30,
+    "numberOfMetadataDocumentsScanned": 0,
+    "numberOfNewDocumentsIndexed": 27,
+    "numberOfModifiedDocumentsIndexed": 3,
+    "numberOfMetadataDocumentsModified": 0,
+    "numberOfDocumentsDeleted": 0,
+    "numberOfDocumentsFailed": 0,
+    "numberOfDocumentsSkipped": 0
+  },
+  "s3_object_count": 30,
+  "index_record_count": 30,
+  "status_counts": {
+    "INDEXED": 30
+  },
+  "missing_from_index": [],
+  "non_indexed_status": [],
+  "stale_in_index": []
+}

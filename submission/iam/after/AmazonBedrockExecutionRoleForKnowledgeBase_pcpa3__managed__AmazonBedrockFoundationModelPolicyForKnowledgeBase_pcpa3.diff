@@ -1,0 +1,12 @@
+--- before/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3__managed__AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3.json
++++ after/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3__managed__AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3.json
+@@ -13,8 +13,7 @@
+     {
+       "Action": [
+         "aws-marketplace:Subscribe",
+-        "aws-marketplace:ViewSubscriptions",
+-        "aws-marketplace:Unsubscribe"
++        "aws-marketplace:ViewSubscriptions"
+       ],
+       "Condition": {
+         "StringEquals": {

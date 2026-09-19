@@ -1,0 +1,10 @@
+--- before/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3__managed__AmazonBedrockS3PolicyForKnowledgeBase_pcpa3.json
++++ after/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3__managed__AmazonBedrockS3PolicyForKnowledgeBase_pcpa3.json
+@@ -30,6 +30,7 @@
+       },
+       "Effect": "Allow",
+       "Resource": [
++        "arn:aws:s3:::northstar-assist-kb-41071520",
+         "arn:aws:s3:::northstar-assist-kb-41071520/*"
+       ],
+       "Sid": "S3GetObjectStatement"

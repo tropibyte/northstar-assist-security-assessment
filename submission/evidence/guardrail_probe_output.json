@@ -1,0 +1,27 @@
+{
+  "guardrail_id": "6yxbopugn44t",
+  "version": "1",
+  "source": "OUTPUT",
+  "cases": [
+    {
+      "id": "FP-03_run1",
+      "error": "An error occurred (AccessDeniedException) when calling the ApplyGuardrail operation: User: arn:aws:sts::118924230273:assumed-role/voclabs/user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2 is not authorized to perform: bedrock:ApplyGuardrail on resource: arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t with an explicit deny in an identity-based policy: arn:aws:iam::118924230273:policy/voc-cancel-cred"
+    },
+    {
+      "id": "FP-03_run2",
+      "error": "An error occurred (AccessDeniedException) when calling the ApplyGuardrail operation: User: arn:aws:sts::118924230273:assumed-role/voclabs/user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2 is not authorized to perform: bedrock:ApplyGuardrail on resource: arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t with an explicit deny in an identity-based policy: arn:aws:iam::118924230273:policy/voc-cancel-cred"
+    },
+    {
+      "id": "MI-01_run1",
+      "error": "An error occurred (AccessDeniedException) when calling the ApplyGuardrail operation: User: arn:aws:sts::118924230273:assumed-role/voclabs/user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2 is not authorized to perform: bedrock:ApplyGuardrail on resource: arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t with an explicit deny in an identity-based policy: arn:aws:iam::118924230273:policy/voc-cancel-cred"
+    },
+    {
+      "id": "MI-01_run2",
+      "error": "An error occurred (AccessDeniedException) when calling the ApplyGuardrail operation: User: arn:aws:sts::118924230273:assumed-role/voclabs/user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2 is not authorized to perform: bedrock:ApplyGuardrail on resource: arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t with an explicit deny in an identity-based policy: arn:aws:iam::118924230273:policy/voc-cancel-cred"
+    },
+    {
+      "id": "MI-01_run3",
+      "error": "An error occurred (AccessDeniedException) when calling the ApplyGuardrail operation: User: arn:aws:sts::118924230273:assumed-role/voclabs/user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2 is not authorized to perform: bedrock:ApplyGuardrail on resource: arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t with an explicit deny in an identity-based policy: arn:aws:iam::118924230273:policy/voc-cancel-cred"
+    }
+  ]
+}

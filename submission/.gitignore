@@ -1,0 +1,17 @@
+# Local configuration names a real bucket; keep it out of the repo.
+config.json
+
+# Never commit credentials. The scripts read them from the environment only.
+.env
+*.pem
+credentials
+aws_credentials*
+
+# NOTE: evidence/transcripts/, evidence/state.json and evidence/logs/ were
+# initially excluded here on privacy grounds. That was reconsidered and they
+# are now committed deliberately: they are the assessment's primary evidence
+# (101 test transcripts, live resource state, invocation log samples), the
+# corpus behind them is Udacity's synthetic sample data, the ns_live_... token
+# in it is fake, the AWS account was torn down on completion, and the account
+# ID already appears in every committed document — so excluding them was
+# inconsistent as well as weakening the submission.

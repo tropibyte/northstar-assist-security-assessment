@@ -1,0 +1,40 @@
+{
+  "harnessId": "NorthstarAssist-MUUuZ1Tr6j",
+  "harnessName": "NorthstarAssist",
+  "arn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:harness/NorthstarAssist-MUUuZ1Tr6j",
+  "status": "READY",
+  "harnessVersion": "2",
+  "executionRoleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
+  "executionRoleName": "AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
+  "model": {
+    "bedrockModelConfig": {
+      "modelId": "us.amazon.nova-2-lite-v1:0",
+      "apiFormat": "converse_stream"
+    }
+  },
+  "systemPrompt": [
+    {
+      "text": "You are Northstar Assist, Northstar Technologies' internal employee assistant. Your job is to help Northstar employees find accurate answers to questions about company policies, procedures, and internal documentation. Always search the Northstar knowledge base tool before answering a question about Northstar. Base your answers only on the retrieved documents and name the source document you used. Do not make up policy details. If the knowledge base does not contain relevant information, say so clearly. Do not guess. Do not discuss topics unrelated to Northstar operations."
+    }
+  ],
+  "tools": [
+    {
+      "type": "agentcore_gateway",
+      "name": "northstar-assist-gateway-1jkdshz4iy",
+      "config": {
+        "agentCoreGateway": {
+          "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
+          "outboundAuth": {
+            "awsIam": {}
+          }
+        }
+      }
+    }
+  ],
+  "memory": {
+    "disabled": {}
+  },
+  "maxIterations": 75,
+  "maxTokens": null,
+  "timeoutSeconds": 3600
+}

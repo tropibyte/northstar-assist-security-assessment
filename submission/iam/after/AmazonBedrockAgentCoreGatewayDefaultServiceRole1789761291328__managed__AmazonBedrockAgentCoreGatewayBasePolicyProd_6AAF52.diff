@@ -1,0 +1,12 @@
+--- before/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328__managed__AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52.json
++++ after/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328__managed__AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52.json
+@@ -6,7 +6,8 @@
+       ],
+       "Effect": "Allow",
+       "Resource": [
+-        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-*"
++        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
++        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy/*"
+       ],
+       "Sid": "GetGateway"
+     },

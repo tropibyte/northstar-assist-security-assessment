@@ -1,0 +1,25 @@
+{
+  "deleted": [
+    "harness NorthstarAssist-MUUuZ1Tr6j",
+    "gateway target P7RIYTP3TF",
+    "gateway northstar-assist-gateway-1jkdshz4iy",
+    "data source MK4SIJZUXC",
+    "knowledge base MHJCWFFIBH",
+    "guardrail 6yxbopugn44t",
+    "bucket northstar-assist-kb-41071520",
+    "log group /aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-bLGD1JFib7-DEFAULT",
+    "log group /aws/vendedlogs/bedrock/knowledge-base/APPLICATION_LOGS/MHJCWFFIBH",
+    "log group /northstar-assist/model-invocations",
+    "6 CloudWatch alarm(s): NorthstarAssist-GroundingBlocked, NorthstarAssist-GuardrailIntervention, NorthstarAssist-HighTokenResponse, NorthstarAssist-PromptAttackDetected, NorthstarAssist-ToolCallFailure, NorthstarAssist-ZeroChunkRetrieval",
+    "model invocation logging configuration",
+    "inline policy AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf/NorthstarAssistApplyGuardrail"
+  ],
+  "skipped": [
+    "metric filter GuardrailIntervention",
+    "metric filter PromptAttackDetected",
+    "metric filter GroundingBlocked",
+    "metric filter HighTokenResponse",
+    "metric filter ToolCallFailure"
+  ],
+  "failed": []
+}

@@ -1,0 +1,90 @@
+{
+  "namespace": "NorthstarAssist/Security",
+  "alarms": [
+    "NorthstarAssist-GuardrailIntervention",
+    "NorthstarAssist-PromptAttackDetected",
+    "NorthstarAssist-GroundingBlocked",
+    "NorthstarAssist-HighTokenResponse",
+    "NorthstarAssist-ToolCallFailure"
+  ],
+  "signals": [
+    {
+      "name": "GuardrailIntervention",
+      "metric": "GuardrailInterventions",
+      "pattern": "{ $.output.outputBodyJson.stopReason = \"guardrail_intervened\" }",
+      "verified": "stopReason observed in live records",
+      "description": "Any guardrail intervention, input or output side.",
+      "alarm": {
+        "threshold": 10,
+        "period": 3600,
+        "evaluation_periods": 1,
+        "rationale": "A handful of interventions per hour is normal for an internal assistant. Ten in one hour from a population this size means either a probing user or a broken prompt template."
+      }
+    },
+    {
+      "name": "PromptAttackDetected",
+      "metric": "PromptAttackInterventions",
+      "pattern": "{{ $.output.outputBodyJson.trace.guardrail.inputAssessment.{gid}.contentPolicy.filters[*].type = \"PROMPT_ATTACK\" }}",
+      "verified": "path structure observed; guardrail ID templated to stay within the one-wildcard limit",
+      "description": "Interventions attributed specifically to the prompt attack filter.",
+      "alarm": {
+        "threshold": 5,
+        "period": 3600,
+        "evaluation_periods": 1,
+        "rationale": "The headline alert. Five prompt-attack interventions in one hour is well above accidental phrasing and indicates deliberate probing; it warrants paging the on-call analyst."
+      }
+    },
+    {
+      "name": "GroundingBlocked",
+      "metric": "GroundingBlocks",
+      "pattern": "{{ $.output.outputBodyJson.trace.guardrail.outputAssessments[0].{gid}.contextualGroundingPolicy.filters[*].action = \"BLOCKED\" }}",
+      "verified": "path structure observed on the output assessment",
+      "description": "Answers withheld because they could not be grounded in the retrieved documents.",
+      "alarm": {
+        "threshold": 8,
+        "period": 3600,
+        "evaluation_periods": 1,
+        "rationale": "This is the only control that caught corpus poisoning in testing, and it caught it in 2 of 3 attempts. A rising rate means either the corpus has drifted from what users ask about or something in the index is contradicting itself - which is exactly what a poisoned document looks like from outside."
+      }
+    },
+    {
+      "name": "HighTokenResponse",
+      "metric": "HighTokenResponses",
+      "pattern": "{ $.output.outputTokenCount > 3000 }",
+      "verified": "outputTokenCount observed in live records",
+      "description": "Single responses far above the session average, the signature of an amplification or bulk-extraction attempt.",
+      "alarm": {
+        "threshold": 5,
+        "period": 3600,
+        "evaluation_periods": 1,
+        "rationale": "Normal policy answers run a few hundred output tokens. Repeated multi-thousand-token responses are either a cost attack or bulk extraction of corpus content. In testing, the token cap was the ONLY thing that stopped a forged-context attack mid-way through dumping the employee directory."
+      }
+    },
+    {
+      "name": "ToolCallFailure",
+      "metric": "ToolCallFailures",
+      "pattern": "{ $.output.outputBodyJson.stopReason = \"malformed_tool_use\" }",
+      "verified": "observed during testing (FP-05 run 2)",
+      "description": "The model emitted a tool call the runtime could not parse, so retrieval silently did not happen.",
+      "alarm": {
+        "threshold": 5,
+        "period": 3600,
+        "evaluation_periods": 1,
+        "rationale": "A reliability signal with a security consequence: a failed tool call produces an answer with no retrieval behind it, which is indistinguishable to the user from a grounded one."
+      }
+    }
+  ],
+  "not_derivable": [
+    {
+      "name": "ZeroChunkRetrieval",
+      "why": "Retrieval happens in the AgentCore Gateway, not in the model call. A ConverseStream record shows the tool CONFIG but not how many chunks came back, and a single user turn produces several records. Counting zero-chunk answers requires the harness runtime log group (/aws/bedrock-agentcore/runtimes/harness_<name>-<id>-DEFAULT) or client-side instrumentation such as the test harness in submission/scripts/harness_client.py, which records retrieved_chunks per turn directly."
+    }
+  ],
+  "resolved_patterns": {
+    "GuardrailIntervention": "{ $.output.outputBodyJson.stopReason = \"guardrail_intervened\" }",
+    "PromptAttackDetected": "{{ $.output.outputBodyJson.trace.guardrail.inputAssessment.6yxbopugn44t.contentPolicy.filters[*].type = \"PROMPT_ATTACK\" }}",
+    "GroundingBlocked": "{{ $.output.outputBodyJson.trace.guardrail.outputAssessments[0].6yxbopugn44t.contextualGroundingPolicy.filters[*].action = \"BLOCKED\" }}",
+    "HighTokenResponse": "{ $.output.outputTokenCount > 3000 }",
+    "ToolCallFailure": "{ $.output.outputBodyJson.stopReason = \"malformed_tool_use\" }"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "identity": {
+    "account_id": "118924230273",
+    "arn": "arn:aws:sts::118924230273:assumed-role/voclabs/user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2",
+    "user_id": "AROARXMDPX2A7GM3DA25R:user4849415=8684a8bb-6014-405c-9f58-64ad221c37d2"
+  },
+  "region": "us-east-1",
+  "config": {
+    "region": "us-east-1",
+    "bucket": "northstar-assist-kb-41071520",
+    "kb_name": "northstar-assist-kb",
+    "data_source_name": "northstar-documents",
+    "gateway_name": "northstar-assist-gateway",
+    "gateway_target_name": "northstar-kb",
+    "harness_name": "NorthstarAssist",
+    "guardrail_name": "northstar-assist-guardrail",
+    "model_id": "us.amazon.nova-2-lite-v1:0",
+    "embedding_model_id": "amazon.titan-embed-text-v2:0",
+    "log_group": "/northstar-assist/model-invocations",
+    "alarm_sns_topic_arn": ""
+  },
+  "models": {
+    "foundation_models": [
+      "amazon.nova-2-lite-v1:0",
+      "amazon.nova-2-lite-v1:0:256k",
+      "amazon.nova-2-multimodal-embeddings-v1:0",
+      "amazon.nova-2-sonic-v1:0",
+      "amazon.nova-canvas-v1:0",
+      "amazon.nova-lite-v1:0",
+      "amazon.nova-lite-v1:0:24k",
+      "amazon.nova-lite-v1:0:300k",
+      "amazon.nova-micro-v1:0",
+      "amazon.nova-micro-v1:0:128k",
+      "amazon.nova-micro-v1:0:24k",
+      "amazon.nova-pro-v1:0",
+      "amazon.nova-pro-v1:0:24k",
+      "amazon.nova-pro-v1:0:300k",
+      "amazon.nova-reel-v1:0",
+      "amazon.nova-reel-v1:1",
+      "amazon.titan-embed-g1-text-02",
+      "amazon.titan-embed-image-v1",
+      "amazon.titan-embed-image-v1:0",
+      "amazon.titan-embed-text-v1",
+      "amazon.titan-embed-text-v1:2:8k",
+      "amazon.titan-embed-text-v2:0",
+      "amazon.titan-embed-text-v2:0:8k",
+      "anthropic.claude-fable-5",
+      "anthropic.claude-fable-5-1",
+      "anthropic.claude-haiku-4-5-20251001-v1:0",
+      "anthropic.claude-opus-4-1-20250805-v1:0",
+      "anthropic.claude-opus-4-5-20251101-v1:0",
+      "anthropic.claude-opus-4-6-v1",
+      "anthropic.claude-opus-4-7",
+      "anthropic.claude-opus-4-8",
+      "anthropic.claude-opus-5",
+      "anthropic.claude-sonnet-4-20250514-v1:0",
+      "anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "anthropic.claude-sonnet-4-6",
+      "anthropic.claude-sonnet-5"
+    ],
+    "inference_profile": {
+      "arn": "arn:aws:bedrock:us-east-1:118924230273:inference-profile/us.amazon.nova-2-lite-v1:0",
+      "status": "ACTIVE",
+      "models": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-2-lite-v1:0",
+        "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-2-lite-v1:0",
+        "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-2-lite-v1:0"
+      ]
+    },
+    "issues": [],
+    "model_count": 115
+  },
+  "existing_resources": {
+    "s3_buckets": [
+      "northstar-assist-kb-41071520"
+    ],
+    "knowledge_bases": [
+      {
+        "id": "MHJCWFFIBH",
+        "name": "northstar-assist-kb",
+        "status": "ACTIVE"
+      }
+    ],
+    "gateways": [
+      {
+        "id": "northstar-assist-gateway-1jkdshz4iy",
+        "name": "northstar-assist-gateway",
+        "status": "READY"
+      }
+    ],
+    "harnesses": [
+      {
+        "id": "NorthstarAssist-MUUuZ1Tr6j",
+        "name": "NorthstarAssist",
+        "arn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:harness/NorthstarAssist-MUUuZ1Tr6j",
+        "status": "READY"
+      }
+    ],
+    "guardrails": []
+  },
+  "model_invocation_logging": {
+    "enabled": true,
+    "destinations": [
+      "cloudWatchConfig"
+    ],
+    "config": {
+      "cloudWatchConfig": {
+        "logGroupName": "/northstar-assist/model-invocations",
+        "roleArn": "arn:aws:iam::118924230273:role/NorthstarAssistBedrockLoggingRole"
+      },
+      "textDataDeliveryEnabled": true,
+      "imageDataDeliveryEnabled": false,
+      "embeddingDataDeliveryEnabled": false,
+      "videoDataDeliveryEnabled": true
+    }
+  }
+}

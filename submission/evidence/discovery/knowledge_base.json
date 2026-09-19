@@ -1,0 +1,75 @@
+{
+  "knowledgeBaseId": "MHJCWFFIBH",
+  "name": "northstar-assist-kb",
+  "arn": "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH",
+  "status": "ACTIVE",
+  "roleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3",
+  "roleName": "AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3",
+  "knowledgeBaseConfiguration": {
+    "type": "MANAGED",
+    "managedKnowledgeBaseConfiguration": {
+      "embeddingModelType": "CUSTOM",
+      "embeddingModelArn": "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0",
+      "embeddingModelConfiguration": {
+        "bedrockEmbeddingModelConfiguration": {
+          "dimensions": 1024,
+          "embeddingDataType": "FLOAT32"
+        }
+      }
+    }
+  },
+  "storageConfiguration": null,
+  "data_sources": [
+    {
+      "dataSourceId": "MK4SIJZUXC",
+      "name": "northstar-documents",
+      "status": "AVAILABLE",
+      "dataSourceConfiguration": {
+        "type": "MANAGED_KNOWLEDGE_BASE_CONNECTOR",
+        "managedKnowledgeBaseConnectorConfiguration": {
+          "deletionProtectionConfiguration": {
+            "deletionProtectionStatus": "DISABLED",
+            "deletionProtectionThreshold": 15
+          },
+          "mediaExtractionConfiguration": {
+            "imageExtractionConfiguration": {
+              "imageExtractionStatus": "ENABLED"
+            },
+            "audioExtractionConfiguration": {
+              "audioExtractionStatus": "ENABLED"
+            },
+            "videoExtractionConfiguration": {
+              "videoExtractionStatus": "ENABLED"
+            }
+          },
+          "connectorParameters": "{\"type\":\"S3\",\"filterConfiguration\":{\"maxFileSizeInMegaBytes\":\"10240\"},\"connectionConfiguration\":{\"bucketName\":\"northstar-assist-kb-41071520\",\"bucketOwnerAccountId\":\"118924230273\",\"bucketArn\":\"arn:aws:s3:::northstar-assist-kb-41071520\"},\"aclEnabled\":false,\"version\":\"1\"}"
+        }
+      },
+      "vectorIngestionConfiguration": {
+        "parsingConfiguration": {
+          "parsingStrategy": "SMART_PARSING"
+        }
+      },
+      "ingestion_jobs": [
+        {
+          "knowledgeBaseId": "MHJCWFFIBH",
+          "dataSourceId": "MK4SIJZUXC",
+          "ingestionJobId": "AMIEY3KEDH",
+          "status": "COMPLETE",
+          "startedAt": "2026-09-18 19:53:11.233373+00:00",
+          "updatedAt": "2026-09-18 19:55:43.255906+00:00",
+          "statistics": {
+            "numberOfDocumentsScanned": 30,
+            "numberOfMetadataDocumentsScanned": 0,
+            "numberOfNewDocumentsIndexed": 27,
+            "numberOfModifiedDocumentsIndexed": 3,
+            "numberOfMetadataDocumentsModified": 0,
+            "numberOfDocumentsDeleted": 0,
+            "numberOfDocumentsFailed": 0,
+            "numberOfDocumentsSkipped": 0
+          }
+        }
+      ]
+    }
+  ]
+}

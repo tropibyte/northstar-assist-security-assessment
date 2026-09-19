@@ -1,0 +1,570 @@
+{
+  "corpus_root": "C:\\Users\\tarie\\source\\repos\\Woolf\\cd15147-Foundations-Operational-AI-Security\\project\\northstar-knowledge-base",
+  "document_count": 30,
+  "classification_totals": {
+    "CONFIDENTIAL": 12,
+    "INTERNAL": 17,
+    "RESTRICTED": 1
+  },
+  "rule_totals": {
+    "employee_id": 64,
+    "internal_email": 44,
+    "customer_id": 33,
+    "external_email": 30,
+    "ticket_id": 18,
+    "opportunity_id": 15,
+    "us_phone": 7,
+    "ec2_instance_id": 6,
+    "aws_account_id": 3,
+    "password_literal": 2,
+    "api_bearer_token": 1,
+    "generic_bearer": 1
+  },
+  "documents": [
+    {
+      "path": "csv/aws_infrastructure_inventory.csv",
+      "format": "csv",
+      "bytes": 3016,
+      "chars": 2995,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [
+        "monthly_cost"
+      ],
+      "findings": {
+        "ec2_instance_id": {
+          "severity": "MEDIUM",
+          "count": 6,
+          "distinct": 6,
+          "samples": [
+            "i-0a1b2c3d4e5f6g7h8",
+            "i-1b2c3d4e5f6g7h8i9",
+            "i-2c3d4e5f6g7h8i9j0"
+          ]
+        }
+      }
+    },
+    {
+      "path": "csv/customer_accounts.csv",
+      "format": "csv",
+      "bytes": 2428,
+      "chars": 2412,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [
+        "monthly_revenue"
+      ],
+      "findings": {
+        "external_email": {
+          "severity": "HIGH",
+          "count": 15,
+          "distinct": 15,
+          "samples": [
+            "a.rodriguez@techstart.io",
+            "d.chen@pacificretail.com",
+            "e.hart@novapharma.com"
+          ]
+        },
+        "customer_id": {
+          "severity": "MEDIUM",
+          "count": 15,
+          "distinct": 15,
+          "samples": [
+            "CUST001",
+            "CUST002",
+            "CUST003"
+          ]
+        }
+      }
+    },
+    {
+      "path": "csv/employee_directory.csv",
+      "format": "csv",
+      "bytes": 2830,
+      "chars": 2804,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 25,
+          "distinct": 25,
+          "samples": [
+            "amanda.thompson@northstartech.com",
+            "andrew.robinson@northstartech.com",
+            "brian.clark@northstartech.com"
+          ]
+        },
+        "employee_id": {
+          "severity": "MEDIUM",
+          "count": 41,
+          "distinct": 25,
+          "samples": [
+            "EMP001",
+            "EMP002",
+            "EMP003"
+          ]
+        }
+      }
+    },
+    {
+      "path": "csv/sales_pipeline.csv",
+      "format": "csv",
+      "bytes": 3231,
+      "chars": 3215,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [
+        "deal_size",
+        "probability"
+      ],
+      "findings": {
+        "external_email": {
+          "severity": "HIGH",
+          "count": 15,
+          "distinct": 15,
+          "samples": [
+            "a.kim@dynamicsoft.io",
+            "d.wong@starlightent.com",
+            "f.morrison@coastalship.com"
+          ]
+        },
+        "opportunity_id": {
+          "severity": "MEDIUM",
+          "count": 15,
+          "distinct": 15,
+          "samples": [
+            "OPP-2023-101",
+            "OPP-2023-102",
+            "OPP-2023-103"
+          ]
+        }
+      }
+    },
+    {
+      "path": "csv/support_tickets.csv",
+      "format": "csv",
+      "bytes": 3050,
+      "chars": 3031,
+      "classification": "INTERNAL",
+      "max_severity": "MEDIUM",
+      "sensitive_columns": [],
+      "findings": {
+        "customer_id": {
+          "severity": "MEDIUM",
+          "count": 18,
+          "distinct": 12,
+          "samples": [
+            "CUST001",
+            "CUST002",
+            "CUST003"
+          ]
+        },
+        "ticket_id": {
+          "severity": "LOW",
+          "count": 18,
+          "distinct": 18,
+          "samples": [
+            "TKT-2023-0001",
+            "TKT-2023-0002",
+            "TKT-2023-0003"
+          ]
+        }
+      }
+    },
+    {
+      "path": "docx/disaster_recovery_plan.docx",
+      "format": "docx",
+      "bytes": 16671,
+      "chars": 7727,
+      "classification": "INTERNAL",
+      "max_severity": "MEDIUM",
+      "sensitive_columns": [],
+      "findings": {
+        "us_phone": {
+          "severity": "MEDIUM",
+          "count": 5,
+          "distinct": 5,
+          "samples": [
+            "206-555-1001",
+            "206-555-1004",
+            "206-555-1007"
+          ]
+        }
+      }
+    },
+    {
+      "path": "docx/product_requirements_document.docx",
+      "format": "docx",
+      "bytes": 17511,
+      "chars": 10485,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "docx/quarterly_business_review.docx",
+      "format": "docx",
+      "bytes": 17865,
+      "chars": 8339,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "docx/security_policy.docx",
+      "format": "docx",
+      "bytes": 16218,
+      "chars": 7788,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 2,
+          "distinct": 1,
+          "samples": [
+            "security@northstartech.com"
+          ]
+        },
+        "us_phone": {
+          "severity": "MEDIUM",
+          "count": 1,
+          "distinct": 1,
+          "samples": [
+            "206-555-7325"
+          ]
+        }
+      }
+    },
+    {
+      "path": "docx/sow_template.docx",
+      "format": "docx",
+      "bytes": 16024,
+      "chars": 7437,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "html/api_authentication_guide.html",
+      "format": "html",
+      "bytes": 10254,
+      "chars": 4997,
+      "classification": "RESTRICTED",
+      "max_severity": "CRITICAL",
+      "sensitive_columns": [],
+      "findings": {
+        "api_bearer_token": {
+          "severity": "CRITICAL",
+          "count": 1,
+          "distinct": 1,
+          "samples": [
+            "<redacted>"
+          ]
+        },
+        "generic_bearer": {
+          "severity": "CRITICAL",
+          "count": 1,
+          "distinct": 1,
+          "samples": [
+            "<redacted>"
+          ]
+        },
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 1,
+          "distinct": 1,
+          "samples": [
+            "api-support@northstartech.com"
+          ]
+        }
+      }
+    },
+    {
+      "path": "html/aws_architecture_documentation.html",
+      "format": "html",
+      "bytes": 21468,
+      "chars": 8998,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "aws_account_id": {
+          "severity": "HIGH",
+          "count": 3,
+          "distinct": 3,
+          "samples": [
+            "123456789012",
+            "234567890123",
+            "345678901234"
+          ]
+        }
+      }
+    },
+    {
+      "path": "html/company_policies_handbook.html",
+      "format": "html",
+      "bytes": 18830,
+      "chars": 10617,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 6,
+          "distinct": 5,
+          "samples": [
+            "hr@northstartech.com",
+            "it-support@northstartech.com",
+            "legal@northstartech.com"
+          ]
+        },
+        "us_phone": {
+          "severity": "MEDIUM",
+          "count": 1,
+          "distinct": 1,
+          "samples": [
+            "206-555-1234"
+          ]
+        }
+      }
+    },
+    {
+      "path": "html/product_features_overview.html",
+      "format": "html",
+      "bytes": 12874,
+      "chars": 4624,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 1,
+          "distinct": 1,
+          "samples": [
+            "product@northstartech.com"
+          ]
+        }
+      }
+    },
+    {
+      "path": "html/troubleshooting_guide.html",
+      "format": "html",
+      "bytes": 17238,
+      "chars": 7546,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 2,
+          "distinct": 2,
+          "samples": [
+            "billing@northstartech.com",
+            "security@northstartech.com"
+          ]
+        }
+      }
+    },
+    {
+      "path": "pdf/api_best_practices.pdf",
+      "format": "pdf",
+      "bytes": 46425,
+      "chars": 755,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "pdf/compliance_overview.pdf",
+      "format": "pdf",
+      "bytes": 46065,
+      "chars": 626,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "pdf/customer_success_playbook.pdf",
+      "format": "pdf",
+      "bytes": 46854,
+      "chars": 732,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "pdf/data_governance_policy.pdf",
+      "format": "pdf",
+      "bytes": 46791,
+      "chars": 1012,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "pdf/service_level_agreement.pdf",
+      "format": "pdf",
+      "bytes": 45741,
+      "chars": 670,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "txt/company_announcement_q3_kickoff.txt",
+      "format": "txt",
+      "bytes": 6923,
+      "chars": 6746,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "txt/engineering_team_meeting_notes_2023_06_15.txt",
+      "format": "txt",
+      "bytes": 3657,
+      "chars": 3540,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "txt/incident_report_2023_06_03.txt",
+      "format": "txt",
+      "bytes": 6618,
+      "chars": 6458,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "txt/onboarding_checklist_engineering.txt",
+      "format": "txt",
+      "bytes": 6909,
+      "chars": 6743,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 6,
+          "distinct": 6,
+          "samples": [
+            "christopher.moore@northstartech.com",
+            "david.kim@northstartech.com",
+            "firstname.lastname@northstartech.com"
+          ]
+        }
+      }
+    },
+    {
+      "path": "txt/release_notes_v2.5.0.txt",
+      "format": "txt",
+      "bytes": 5777,
+      "chars": 5644,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "internal_email": {
+          "severity": "HIGH",
+          "count": 1,
+          "distinct": 1,
+          "samples": [
+            "support@northstartech.com"
+          ]
+        }
+      }
+    },
+    {
+      "path": "xlsx/budget_tracking_q3_2023.xlsx",
+      "format": "xlsx",
+      "bytes": 6454,
+      "chars": 1528,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "xlsx/employee_training_records.xlsx",
+      "format": "xlsx",
+      "bytes": 6660,
+      "chars": 2487,
+      "classification": "INTERNAL",
+      "max_severity": "MEDIUM",
+      "sensitive_columns": [],
+      "findings": {
+        "employee_id": {
+          "severity": "MEDIUM",
+          "count": 23,
+          "distinct": 14,
+          "samples": [
+            "EMP001",
+            "EMP002",
+            "EMP003"
+          ]
+        }
+      }
+    },
+    {
+      "path": "xlsx/okr_tracking_q3_2023.xlsx",
+      "format": "xlsx",
+      "bytes": 6442,
+      "chars": 1741,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "xlsx/project_timeline_q3_2023.xlsx",
+      "format": "xlsx",
+      "bytes": 5972,
+      "chars": 1150,
+      "classification": "INTERNAL",
+      "max_severity": "NONE",
+      "sensitive_columns": [],
+      "findings": {}
+    },
+    {
+      "path": "xlsx/vendor_management.xlsx",
+      "format": "xlsx",
+      "bytes": 6460,
+      "chars": 1792,
+      "classification": "CONFIDENTIAL",
+      "max_severity": "HIGH",
+      "sensitive_columns": [],
+      "findings": {
+        "password_literal": {
+          "severity": "HIGH",
+          "count": 2,
+          "distinct": 2,
+          "samples": [
+            "Password\tSecurity",
+            "Password management"
+          ]
+        }
+      }
+    }
+  ]
+}

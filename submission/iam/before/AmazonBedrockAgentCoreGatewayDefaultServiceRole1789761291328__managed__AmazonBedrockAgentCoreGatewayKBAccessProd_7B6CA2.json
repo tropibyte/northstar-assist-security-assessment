@@ -1,0 +1,82 @@
+{
+  "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+  "document": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowBedrockGetKnowledgeBaseFromKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:GetKnowledgeBase",
+        "Resource": [
+          "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+        ]
+      },
+      {
+        "Sid": "AllowBedrockRetrieveFromKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:Retrieve",
+        "Resource": [
+          "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+        ]
+      },
+      {
+        "Sid": "AllowBedrockAgenticRetrieveFromKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:AgenticRetrieveStream",
+        "Resource": "*"
+      },
+      {
+        "Sid": "AllowBedrockInvokeModelForKnowledgeBase",
+        "Effect": "Allow",
+        "Action": [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ],
+        "Resource": [
+          "arn:aws:bedrock:*::foundation-model/*",
+          "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*",
+          "arn:aws:bedrock:us-east-1:118924230273:provisioned-model/*",
+          "arn:aws:bedrock:us-east-1:118924230273:custom-model/*"
+        ],
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:CalledVia": "bedrock.amazonaws.com"
+          }
+        }
+      },
+      {
+        "Sid": "AllowBedrockRerankForKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:Rerank",
+        "Resource": "*",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:CalledVia": "bedrock.amazonaws.com"
+          }
+        }
+      },
+      {
+        "Sid": "AllowBedrockGetInferenceProfileForKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:GetInferenceProfile",
+        "Resource": "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:CalledVia": "bedrock.amazonaws.com"
+          }
+        }
+      },
+      {
+        "Sid": "AllowBedrockApplyGuardrailForKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:ApplyGuardrail",
+        "Resource": "arn:aws:bedrock:us-east-1:118924230273:guardrail/*",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:CalledVia": "bedrock.amazonaws.com"
+          }
+        }
+      }
+    ]
+  }
+}

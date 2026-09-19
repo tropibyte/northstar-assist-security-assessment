@@ -1,0 +1,40 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "S3ListBucketStatement",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::northstar-assist-kb-41071520"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceAccount": [
+            "118924230273"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "S3GetObjectStatement",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::northstar-assist-kb-41071520",
+        "arn:aws:s3:::northstar-assist-kb-41071520/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceAccount": [
+            "118924230273"
+          ]
+        }
+      }
+    }
+  ]
+}
