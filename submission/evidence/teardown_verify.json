@@ -1,5 +1,8 @@
 {
+  "knowledge_bases": [
+    "northstar-assist-kb"
+  ],
   "log_groups": [
-    "/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-bLGD1JFib7-DEFAULT"
+    "/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-bzHBHz8Y0V-DEFAULT"
   ]
 }

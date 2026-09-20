@@ -3,8 +3,17 @@
 ## Northstar Assist — Least-Privilege Access Controls
 
 **Assessment date:** 18 September 2026
+**Rebuilt and re-verified:** 19 September 2026
 **Author:** Tarie Nosworthy
 **Environment:** AWS account 118924230273, `us-east-1`
+
+The work was carried out over two Cloud Lab sessions in the same account. The
+second rebuilt the environment to re-apply the corrected hardening and capture
+a verified after-state (§0). Resource identifiers therefore differ between the
+two sets of evidence — the knowledge base is `MHJCWFFIBH` in the first and
+`V2RJQEGEIW` in the second, and the service roles carry different generated
+suffixes — while the account, region, bucket name and configuration are
+identical.
 
 Every policy document quoted here was **read from the live account**, narrowed
 programmatically, applied, and verified. Nothing was retyped. The complete
@@ -14,16 +23,18 @@ generator's own output in `evidence/iam/generated-change-log.md`.
 
 ---
 
-## 0. Erratum — the hardening widened four logging statements
+## 0. Status — the logging regression, and how it was closed
 
-**Found in post-submission review, 19 September 2026. This corrects a claim
-made elsewhere in this document and in the threat model.**
+**First submission (18 September 2026): defective. Rebuilt and re-verified
+(19 September 2026): clean.** This section is kept in full because the defect
+is part of the record, not because it is still open.
 
-Section 3.1 below describes the CloudWatch Logs changes as narrowing. **For
-three of the four statements that is wrong — they were widened.** Diffed from
-the applied policy:
+### 0.1 What was wrong
 
-| Statement | Before | After (applied) | Effect |
+An external review found that the hardening pass had **widened** three
+CloudWatch Logs statements rather than narrowing them:
+
+| Statement | Before | After (as applied) | Effect |
 | --- | --- | --- | --- |
 | `CloudWatchLogsGroup` | `…:log-group:/aws/bedrock-agentcore/runtimes/*` | `…:log-group:/aws/bedrock-agentcore/*` | **widened** |
 | `CloudWatchLogsStream` | `…/runtimes/*:log-stream:*` | `…/aws/bedrock-agentcore/*` | **widened** |
@@ -31,56 +42,73 @@ the applied policy:
 | `CloudWatchLogsDescribeGroups` | `…:log-group:*` | the narrowed pair | narrowed (correct) |
 
 All four additionally gained
-`arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*`.
+`…:log-group:/northstar-assist/model-invocations:*` — giving the agent's own
+execution role **write access to the log group recording its own model
+invocations**. Threat **R-02** was marked *mitigated* on the strength of this
+work. It was not mitigated; it was made worse.
 
-**Why this matters more than the ARN strings suggest.** That last grant gives
-the agent's own execution role **write access to the log group recording its
-own model invocations** — the audit trail of its behaviour. Threat **R-02**
-("Log tampering by the agent's own role") is marked *mitigated* in the threat
-model on the strength of this work. It was not mitigated; it was made worse.
-R-02 is re-rated **REGRESSED** accordingly.
+A **fourth** widening, in no review, was then found by the policy auditor built
+to check this class of defect: `kb/S3GetObjectStatement` went from
+`bucket/*` to `bucket` + `bucket/*`. The console's knowledge-base S3 policy was
+already textbook least-privilege — `ListBucket` on the bucket, `GetObject` on
+the objects, both under an `aws:ResourceAccount` condition — and the hardening
+pass made it broader. It grants nothing exploitable, since `GetObject` on a
+bucket ARN matches no object, but it is the same fault.
 
-**Root cause.** `resolve_targets()` returned a single `logs` ARN list, and
-`narrow_policy()` applied it to every statement whose actions mapped to the
-`logs` group, discarding each statement's original, tighter scope. The deeper
-fault is that **the narrowing pass never verified it had narrowed** — it
-computed a replacement resource set and wrote it without comparing it to the
-original.
+### 0.2 Root cause
 
-**Fix applied to the code, not to the evidence.** `scripts/20_harden_iam.py`
-now carries an `is_narrower()` guard: every proposed ARN must be covered by at
-least one original ARN, or the statement is left exactly as the console wrote
-it and flagged `KEPT-WOULD-WIDEN`. Leaving a permission too broad is
-recoverable; silently broadening one is not. The harness `logs` target list no
-longer contains the model-invocation group at all, because Bedrock delivers
-those records through `NorthstarAssistBedrockLoggingRole` and the harness has
-no reason to write there.
+`resolve_targets()` returned one ARN list per service for the whole role, and
+`narrow_policy()` applied it to every statement of that service, discarding
+each statement's own tighter scope. The deeper fault is that **the narrowing
+pass never verified it had narrowed** — it computed a replacement resource set
+and wrote it without comparing it to the original.
 
-Re-running the corrected narrowing against the captured before-policy now
-produces:
+Two further faults let it go unnoticed:
 
-```
-NARROWED          CloudWatchLogsDescribeGroups   log-group:* -> runtimes/*
-NARROWED          CloudWatchLogsGroup            runtimes/* (kept, +log-stream scope)
-KEPT-WOULD-WIDEN  CloudWatchLogsStream           original preserved
-KEPT-WOULD-WIDEN  CloudWatchLogsPutResourcePolicy original preserved
-```
+- **`--verify` verified the wrong thing.** It confirmed the agent still
+  answered using retrieval. That is necessary and completely blind to a
+  widening, because widening a permission never breaks anything. Behavioural
+  verification cannot detect a permission change.
+- **The wildcard counter matched only bare `Resource: "*"`.** Seven partial
+  wildcards were therefore never counted, and the summary claimed the gateway
+  role had reached zero.
 
-**These corrected statements were NOT re-applied.** The AWS environment was
-torn down before the review, so `iam/after/` remains an accurate record of what
-was actually applied on 18 September, including the regression. It has
-deliberately not been hand-edited — a before/after evidence set that has been
-retouched is worth nothing. Re-applying and re-verifying is the first item in
-§7.
+### 0.3 What was done about it
 
-**What this says about the rest of the document.** The other narrowing claims
-were re-checked against the applied policy and hold: the model-invocation
-narrowing, the guardrail scoping, the seven removed statements, and the
-`aws-marketplace:Unsubscribe` removal are all as described. The failure was
-specific to the logs group, and it was caught by external review rather than by
-my own verification — which checked that *the agent still worked*, not that
-*every permission had actually shrunk*. A verification step that only asks "is
-it still running?" cannot catch a widening.
+1. **`is_narrower()` guard** in `scripts/20_harden_iam.py`. Every proposed ARN
+   must be covered by at least one original ARN, or the statement is left
+   exactly as the console wrote it and flagged `KEPT-WOULD-WIDEN`. Leaving a
+   permission too broad is recoverable; silently broadening one is not.
+2. **`scripts/22_iam_audit.py`**, a policy-level auditor. It compares every
+   statement's before and after, fails on any widening that is not explicitly
+   declared, and fails on any surviving wildcard with no entry in
+   `iam/wildcard-register.json`. A missing entry is a failure, not a
+   default pass.
+3. **`tests/test_no_widening.py`**, an offline regression test needing no AWS
+   credentials. It replays the captured console policies through the real
+   narrowing pass and asserts nothing widens: **8 policies, 37 statements, 0
+   widened.**
+4. **A rebuild.** The environment was recreated on 19 September, the corrected
+   hardening applied, and the result verified against live IAM.
+
+### 0.4 Result
+
+`iam/iam_after.json`, produced by reading the deployed policies back from IAM:
+
+| | First submission | Rebuild |
+| --- | --- | --- |
+| Statements widened | 4 (undetected) | **0** |
+| Statements removed | 9 | **14** |
+| Surviving wildcards | 22 (7 partial uncounted) | **17** |
+| Wildcards without justification | 7 | **0** |
+| Audit verdict | FAIL | **PASS** |
+
+The first submission's evidence is preserved unedited in
+`iam/session1-2026-09-18/`. It has deliberately not been retouched — a
+before/after evidence set that has been corrected after the fact is worth
+nothing — and `22_iam_audit.py --expect-fail` pointed at that directory exits 0
+*because* it fails, which is how the detector demonstrates it detects the real
+thing rather than asserting that it would.
 
 ---
 
@@ -344,58 +372,68 @@ and the role-policy theory is untested.**
 
 ---
 
-## 4. Surviving wildcards — individual justification
+## 4. Surviving wildcards — every one accounted for
 
-The rubric requires that no wildcard remain unless explicitly justified. There
-are two distinct kinds, and an earlier draft only accounted for the first.
+The hardened roles retain **17 wildcard resources** across 15 statements: 7 bare `Resource: "*"` and 10 partial. Every one carries an entry in `iam/wildcard-register.json`, and `22_iam_audit.py` **fails** on any wildcard that does not — a missing entry is a failure, not a default pass. That is the property the first submission lacked: its counter matched only bare `"*"`, so seven partial wildcards were never counted.
 
-### 4a. Bare `Resource: "*"` — eight statements
+Two classifications are permitted for a surviving wildcard:
 
-**Every one is on an action for which AWS does not support resource-level
-permissions** — the wildcard is not a shortcut, it is the only valid form.
+- **UNAVOIDABLE** — the action does not support resource-level permissions. AWS rejects any `Resource` but `"*"`; the grant cannot be scoped by policy at all.
+- **SCOPED** — the `*` covers only an opaque suffix or sub-resource of one specific named resource. The statement does not reach a second resource of that type.
 
-| Statement | Actions | Justification |
-| --- | --- | --- |
-| `CloudWatchMetricsPublish` (harness) | `cloudwatch:PutMetricData` | No resource-level permissions supported. Constrainable only by a `cloudwatch:namespace` condition key; recommended as a follow-up. |
-| `CloudWatchWritePermissionStatement` (KB) | `cloudwatch:PutMetricData` | As above. |
-| `XRayTracingAccess` | `xray:PutTraceSegments`, `PutTelemetryRecords`, `GetSamplingRules`, `GetSamplingTargets` | X-Ray supports no resource-level permissions for these. Write-only telemetry; no read of other services' traces. |
-| `EcrPublicTokenAccess` | `ecr-public:GetAuthorizationToken` | Token-issuing call with no resource to name. Required to pull the harness runtime image. |
-| `EcrManagedImageToken` | `ecr:GetAuthorizationToken` | As above. The paired `EcrManagedImagePull` **is** scoped, to `repository/harness-*`. |
-| `StsForEcrPublicPull` | `sts:GetServiceBearerToken` | Bearer-token issuance for the ECR pull; no resource. |
-| `BedrockMantleCallWithBearerToken` | `bedrock-mantle:CallWithBearerToken` | Bearer-token call with no resource to name. |
-| `MarketplaceOperationsFromBedrockFor3pModels` | `aws-marketplace:Subscribe`, `ViewSubscriptions` | Account-scoped by nature. **`Unsubscribe` was removed** — the dangerous member of the set. |
+A third class, **NECESSARY** — broader than ideal but proven required — is supported by the register and requires an evidence pointer to an ablation run. **No statement needed it.** Every candidate for it was removed outright instead (§4.2).
 
-Four of these (`ecr-public`, `ecr`, `sts:GetServiceBearerToken`,
-`bedrock-mantle`) are the bootstrap that starts the harness runtime. Removing
-them would stop the agent running at all — which the verification in §5 would
-have caught.
-
-### 4b. Partial wildcards — seven statements, omitted from the earlier draft
-
-These carry a `*` inside an otherwise-scoped ARN. They are **not** covered by
-the "no resource-level permissions" argument above, and leaving them out of the
-justification table was an omission, not a judgement.
-
-| Role | Statement | Resource | Assessment |
+| Role | Statement | Resource(s) | Class |
 | --- | --- | --- | --- |
-| Harness | `AgentCoreWorkloadIdentity` | `…workload-identity-directory/default/workload-identity/harness_NorthstarAssist-*` | **Tight.** Scoped to this harness's own identity; the `*` covers only the generated suffix. |
-| Harness | `EcrManagedImagePull` | `arn:aws:ecr:us-east-1:*:repository/harness-*` | **Acceptable, imperfect.** Repository prefix is scoped; the `*` is the *account* field, because AWS publishes harness runtime images from an AWS-owned account whose ID is not documented. Pinning it would need that ID. |
-| Harness | `BedrockMantleInference` | `arn:aws:bedrock-mantle:us-east-1:118924230273:*` | **Loose.** Every `bedrock-mantle` resource in the account. Account- and region-scoped, but not resource-scoped. `bedrock-mantle` is an undocumented internal service, so the valid sub-resource ARNs are unknown. Flagged for follow-up. |
-| Harness | 4 × CloudWatch Logs | `…log-group:/aws/bedrock-agentcore/*` + the invocation group | **Regression — see §0.** Should be `…/runtimes/*` scoped and must not include the invocation log group. |
-| Gateway | `GetGateway` | `…gateway/northstar-assist-gateway-1jkdshz4iy/*` | **Tight.** Scoped to this gateway; the `*` covers its sub-resources. |
-| Gateway | `GetConfigurationBundleVersion` | `…configuration-bundle/*` | **Loose.** Any configuration bundle in the account. Read-only, and no bundle is configured for this system, so the statement arguably has no caller and could be removed. |
-| Gateway | `GetInferenceProfile` | `…inference-profile/*` | **Loose.** Read-only metadata on any inference profile in the account. Should be scoped to the embedding model's profile. |
+| gateway | `GetGateway` | `arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn/*` | **SCOPED** |
+| harness | `AgentCoreWorkloadIdentity` | `arn:aws:bedrock-agentcore:us-east-1:118924230273:workload-identity-directory/default/workload-identity/harness_NorthstarAssist-*` | **SCOPED** |
+| harness | `BedrockMantleCallWithBearerToken` | `*` | **UNAVOIDABLE** |
+| harness | `CloudWatchLogsDescribeGroups` | `arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*`<br>`arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*` | **SCOPED** |
+| harness | `CloudWatchLogsGroup` | `arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*`<br>`arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*` | **SCOPED** |
+| harness | `CloudWatchLogsPutResourcePolicy` | `arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*` | **SCOPED** |
+| harness | `CloudWatchLogsStream` | `arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*` | **SCOPED** |
+| harness | `CloudWatchMetricsPublish` | `*` | **UNAVOIDABLE** |
+| harness | `EcrManagedImagePull` | `arn:aws:ecr:us-east-1:*:repository/harness-*` | **SCOPED** |
+| harness | `EcrManagedImageToken` | `*` | **UNAVOIDABLE** |
+| harness | `EcrPublicTokenAccess` | `*` | **UNAVOIDABLE** |
+| harness | `StsForEcrPublicPull` | `*` | **UNAVOIDABLE** |
+| harness | `XRayTracingAccess` | `*` | **UNAVOIDABLE** |
+| kb | `CloudWatchWritePermissionStatement` | `*` | **UNAVOIDABLE** |
+| kb | `S3GetObjectStatement` | `arn:aws:s3:::northstar-assist-kb-41071520/*` | **SCOPED** |
 
-Three of these (`bedrock-mantle:…:*`, `configuration-bundle/*`,
-`inference-profile/*`) are genuinely looser than this system needs and were not
-narrowed. They are read-only or internal-service actions, so the exposure is
-low — but "low" is a different claim from "justified," and §7 now carries them
-as follow-ups rather than leaving the §2 table's "0 wildcards" to imply they
-are not there.
+Full justifications, one per statement, are in `iam/wildcard-register.json`; `iam/iam_after.md` renders them alongside this table.
+
+### 4.1 The account-field wildcard, stated plainly
+
+`EcrManagedImagePull` reads `arn:aws:ecr:us-east-1:*:repository/harness-*`. The repository prefix is pinned; the remaining `*` is the **account** field, because AWS publishes AgentCore harness runtime images from an AWS-owned account whose ID is not documented. Pinning it would need that ID. The grant is read-only image pull — it cannot push or delete — but it is the one surviving wildcard whose breadth is imposed by missing documentation rather than by the API, and it is classified SCOPED on the strength of the repository prefix alone.
+
+### 4.2 Wildcards removed rather than justified
+
+Five statements were candidates for a NECESSARY justification. Instead of writing one, each was **removed from the live role and the system retested**. A permission the system does not use cannot break it by being taken away, so a failure after removal would have been strong evidence of necessity. None failed.
+
+| Statement | Wildcard removed | Probe | Result |
+| --- | --- | --- | --- |
+| `BedrockMantleInference` | rn:aws:bedrock-mantle:us-east-1:118924230273: | retrieval + answer | removed — system unaffected |
+| `GetConfigurationBundleVersion` | `arn:aws:bedrock-agentcore:us-east-1:118924230273:configuration-bundle/*` | retrieval + answer | removed — system unaffected |
+| `AllowBedrockGetInferenceProfileForKnowledgeBase` | rn:aws:bedrock:us-east-1:118924230273:inference-profile/ | retrieval + answer | removed — system unaffected |
+| `AllowBedrockApplyGuardrailForKnowledgeBase` | rn:aws:bedrock:us-east-1:118924230273:guardrail/ | retrieval + answer | removed — system unaffected |
+| `MarketplaceOperationsFromBedrockFor3pModels` |  | ingestion job | removed — system unaffected |
+
+The marketplace test is the one worth reading closely. `aws-marketplace:Subscribe` and `ViewSubscriptions` on `*` sat on the knowledge-base role, and the knowledge-base role is used at **ingestion** time, not query time — so a smoke test cannot exercise it at all. The first attempt ran a sync over an already-indexed corpus and reported `scanned=30 new=0 modified=0`: it completed having embedded nothing, which proves nothing about a permission checked at embedding time. The test was rerun with a document planted first, giving `scanned=31 new=1 failed=0` — a document genuinely embedded with Titan v2 while the marketplace grant was absent. The planted document was then deleted and the corpus reverified at 30 of 30 retrievable.
+
+This also closes out a claim withdrawn after the first review. I said then that the harness role's missing marketplace permissions might explain the Anthropic model failures, and had to withdraw it as untested. I still cannot assert that causation — `agreementAvailability` is an account-level state — but I can now say that Titan embedding does not need the grant, because it was removed and a document was embedded anyway.
+
+### 4.3 Reading a removal result honestly
+
+A **failure** after removal is strong evidence of necessity. A **pass** is weaker: an AgentCore runtime caches its role credentials, so a permission withdrawn seconds earlier may still be in force. Every removal here was therefore confirmed a second time — applied permanently, left for 120 seconds, then retested with three smoke runs **and** a must-block prompt to confirm the guardrail still intervened. Verifying a removed `ApplyGuardrail` grant with a prompt that never trips the guardrail would have repeated the original mistake: testing the path where the permission is not used.
+
+One limit, stated rather than glossed: the five removals were confirmed **together**, not one at a time, so no single statement has an isolated post-removal confirmation. Each was also tested individually during the ablation pass, where every one was restored afterwards. Both the individual results and the combined final state are evidenced; the combination of the two is not.
 
 ---
 
-## 5. Verification — and why it was built in
+## 5. Verification — two kinds, and why one was not enough
+
+### 5.1 Behavioural verification
 
 Over-tightening an agent's role produces a failure mode worse than leaving it
 loose: **the agent keeps answering, but without retrieval.** Answers look
@@ -405,26 +443,83 @@ So `--apply` is paired with `--verify`, which after IAM propagation runs one
 live invocation and checks four things: no error, the guardrail did not block a
 benign question, the `Retrieve` tool actually fired, and chunks came back
 non-zero. **On failure it automatically restores every original policy** —
-inline and managed — replaying from `evidence/iam/before/`.
-
-Result:
+inline and managed — replaying from `iam/before/`.
 
 ```
-[18:02:14] OK applied ...HarnessExecutionPolicy_le77v [managed]
-[18:02:14] OK applied ...GatewayKBAccessProd_7B6CA2 [managed]
-[18:02:14] OK applied ...S3PolicyForKnowledgeBase_pcpa3 [managed]
-[18:02:14] ==> waiting 15s for IAM propagation before verifying
-[18:02:39] OK harness still answers with retrieval after narrowing
+[13:58:53] OK applied ...HarnessExecutionPolicy_647sw [managed]
+[13:58:53] OK applied ...GatewayKBAccessProd_28A9EB [managed]
+[13:58:53] OK applied ...S3PolicyForKnowledgeBase_y7cmq [managed]
+[13:58:53] ==> waiting 15s for IAM propagation before verifying
+[13:59:15] OK harness still answers with retrieval after narrowing
 ```
 
-That single line confirms three things at once: the guardrail is attached and
-`ApplyGuardrail` resolves across regions, retrieval still functions through the
-gateway, and nothing load-bearing was removed. No rollback was needed.
+### 5.2 Why that was not enough
 
-**Rollback remains available.** All eight original policy documents are
-preserved, and `--restore` replays them — including managed policies, via a new
-default version. The 5-version IAM cap is handled by pruning the oldest
-non-default version first.
+**This check passed in the first submission too — while three logging
+statements were being widened.** It had to. Widening a permission never breaks
+anything, so a test that asks "does the agent still work?" cannot detect one.
+Behavioural verification is necessary and structurally blind to the failure
+that actually occurred.
+
+The correct question is not *is it still running* but *does the policy now
+grant less than it did*. That is a question about the policy, and it has to be
+asked of the policy.
+
+### 5.3 Policy-level verification
+
+`scripts/22_iam_audit.py` reads the after-state — from `iam/after/` offline, or
+from IAM directly with `--live` — and for every statement, matched by `Sid`:
+
+1. **Nothing widened.** Every resource in the narrowed statement must be
+   covered by at least one resource in the original, and no action may appear
+   that was not there before. Both comparisons are wildcard-aware, so
+   `xray:PutTraceSegments` is not reported as new when the original said
+   `xray:Put*`.
+2. **Every widening is declared.** Hardening is not purely subtractive —
+   granting `bedrock:ApplyGuardrail` on the cross-Region guardrail-profile ARNs
+   is a genuine new grant without which a STANDARD-tier guardrail 403s. Such a
+   change is not exempted from the check; it must be named, resource by
+   resource, in the register's `intentional_grants`, with a reason. An
+   undeclared widening still fails.
+3. **Every surviving wildcard is accounted for**, per §4.
+
+Verdict on the rebuilt environment, read back from live IAM:
+
+```
+statements 37   narrowed 5   removed 14   unchanged 18   widened 0
+wildcards 17 (7 bare, 10 partial)   unjustified 0
+AUDIT PASS - nothing widened, every wildcard justified
+```
+
+### 5.4 Reproducing this without AWS
+
+The audit runs **offline by default** against the committed evidence, so the
+verdict above can be reproduced from a clone with no AWS credentials:
+
+```
+python submission/scripts/22_iam_audit.py
+python submission/tests/test_no_widening.py
+```
+
+The first re-derives the PASS from `iam/before/` versus `iam/after/`. The
+second replays every captured console policy through the real narrowing pass
+and asserts nothing widens — 8 policies, 37 statements, 0 widened.
+
+And because a detector that has never caught anything is only a claim:
+
+```
+python submission/scripts/22_iam_audit.py     --before iam/session1-2026-09-18/before     --after  iam/session1-2026-09-18/after --expect-fail
+```
+
+Pointed at the first submission's preserved evidence, the auditor exits 0
+*because it fails* — reporting the three logging widenings, the S3 widening,
+and the unjustified wildcards. The detector is shown catching the real defect,
+not a synthetic one.
+
+**Rollback remains available.** All original policy documents are preserved and
+`--restore` replays them, including managed policies via a new default version.
+The 5-version IAM cap is handled by pruning the oldest non-default version
+first.
 
 ---
 
@@ -485,23 +580,28 @@ not a tidier policy document.
    infrastructure running and unreachable; the containment path should not share
    fate with the operating path.
 
-### Added after post-submission review (19 September 2026)
+### Items 6-9, raised after the first review — now closed
 
-6. **Re-apply the corrected logging statements and re-verify** (§0). This is the
-   first thing to do on any rebuild: restore `runtimes/*` scoping on
-   `CloudWatchLogsGroup`, `CloudWatchLogsStream` and
-   `CloudWatchLogsPutResourcePolicy`, and confirm the harness role holds **no**
-   grant on `/northstar-assist/model-invocations`.
-7. **Make verification check the permissions, not just the behaviour.** `--verify`
-   confirmed the agent still answered with retrieval, which is necessary and
-   insufficient — it cannot detect a widening. The `is_narrower()` guard now
-   catches it at compute time; a post-apply assertion that re-reads each policy
-   and fails on any resource not covered by its original would close the loop.
-8. **Remove `MarketplaceOperationsFromBedrockFor3pModels` entirely** and re-run a
-   knowledge base sync to confirm Titan ingestion is unaffected (§3.3).
-9. **Scope the three loose partial wildcards** (§4b): `inference-profile/*` to the
-   embedding model's profile, and remove `configuration-bundle/*` and
-   `bedrock-mantle:…:*` if a rebuild confirms they have no caller.
+| # | Item | Status |
+| --- | --- | --- |
+| 6 | Re-apply the corrected logging statements and re-verify | **Done.** Rebuilt 19 Sep; `CloudWatchLogsStream` and `CloudWatchLogsPutResourcePolicy` kept at their original tighter scope via `KEPT-WOULD-WIDEN`, and the harness role holds **no** grant on `/northstar-assist/model-invocations`. |
+| 7 | Make verification check permissions, not behaviour | **Done.** `22_iam_audit.py` asserts on the policy; `tests/test_no_widening.py` replays the captured policies offline. |
+| 8 | Remove `MarketplaceOperationsFromBedrockFor3pModels` and confirm ingestion | **Done.** Removed; a planted document embedded cleanly with Titan v2 (`scanned=31 new=1 failed=0`), corpus reverified 30 of 30. |
+| 9 | Scope the three loose partial wildcards | **Done, by removal.** `inference-profile/*`, `configuration-bundle/*` and `bedrock-mantle:…:*` were each removed outright after ablation showed no caller — better than the narrowing originally proposed. |
+
+### Still open
+
+10. **Confirm each removal individually against a cold runtime.** The five
+    removals were verified together. Each was also tested individually during
+    ablation, but with the statement restored afterwards; no single statement
+    has an isolated post-removal confirmation. A rebuild that removes one at a
+    time would close this.
+11. **Pin the ECR account field** in `EcrManagedImagePull` (§4.1) if AWS ever
+    documents the account publishing AgentCore harness runtime images.
+12. **Re-test guardrail v2.** The 38.5% benign over-block rate measured in the
+    first submission has diagnosed causes and drafted fixes that remain
+    untested; this rebuild was scoped to the IAM finding and did not re-run the
+    29-test suite.
 
 ---
 
@@ -509,8 +609,13 @@ not a tidier policy document.
 
 | Artefact | Location |
 | --- | --- |
+| **Audit verdict, machine-readable** | `iam/iam_after.json` |
+| **Audit verdict, rendered** | `iam/iam_after.md` |
+| **Wildcard register** | `iam/wildcard-register.json` |
+| **Ablation experiments and results** | `iam/ablation-results.json` |
+| **First submission, preserved unedited** | `iam/session1-2026-09-18/` |
 | Original policy documents (8) | `iam/before/` |
-| Narrowed policy documents (9) | `iam/after/` |
+| Narrowed policy documents | `iam/after/` |
 | Unified diffs, per policy | `iam/after/*.diff` |
 | Machine-readable change log | `evidence/iam/iam_changes.json` |
 | Full before/after capture | `evidence/iam/iam_before.json`, `iam_after.json` |

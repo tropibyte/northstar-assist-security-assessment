@@ -1,22 +1,21 @@
 {
-  "gatewayId": "northstar-assist-gateway-1jkdshz4iy",
-  "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
-  "gatewayUrl": "https://northstar-assist-gateway-1jkdshz4iy.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+  "gatewayId": "northstar-assist-gateway-lhirtedegn",
+  "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn",
+  "gatewayUrl": "https://northstar-assist-gateway-lhirtedegn.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
   "name": "northstar-assist-gateway",
   "status": "READY",
-  "roleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328",
-  "roleName": "AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328",
+  "roleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789839392565",
+  "roleName": "AmazonBedrockAgentCoreGatewayDefaultServiceRole1789839392565",
   "authorizerType": "AWS_IAM",
   "protocolType": "MCP",
   "targets": [
     {
-      "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
-      "targetId": "P7RIYTP3TF",
-      "createdAt": "2026-09-18 19:58:40.482640+00:00",
-      "updatedAt": "2026-09-18 19:58:41.335239+00:00",
+      "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn",
+      "targetId": "QXAHPVRBEB",
+      "createdAt": "2026-09-19 17:37:54.825827+00:00",
+      "updatedAt": "2026-09-19 17:37:55.754553+00:00",
       "status": "READY",
       "name": "northstar-kb",
-      "description": "Search Northstar Technologies internal documents (policies, procedures, reports, spreadsheets) and return relevant passages with source documents.",
       "targetConfiguration": {
         "mcp": {
           "connector": {
@@ -28,7 +27,7 @@
               {
                 "name": "Retrieve",
                 "parameterValues": {
-                  "knowledgeBaseId": "MHJCWFFIBH"
+                  "knowledgeBaseId": "V2RJQEGEIW"
                 }
               }
             ]

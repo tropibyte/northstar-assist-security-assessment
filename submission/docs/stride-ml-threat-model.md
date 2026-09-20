@@ -307,31 +307,52 @@ compromised role could enumerate — and in a wider variant, delete — logs of 
 own activity.
 
 **Likelihood: Low.** **Impact: Medium.**
-**Priority: Medium — REGRESSED during hardening, see below.**
+**Priority: Medium — regressed during hardening, then fixed and verified.**
 
-*Mitigation:* **Attempted and botched.** An earlier revision of this document
-rated R-02 *mitigated* on the strength of the IAM work. Post-submission review
-established the opposite: three of the four logging statements were **widened**
-(`/aws/bedrock-agentcore/runtimes/*` out to `/aws/bedrock-agentcore/*`, and
-`PutResourcePolicy` from `harness_NorthstarAssist-*` to the same), and all four
-gained write access to
+*Mitigation:* **Botched first, then fixed.** This entry is kept in full because
+the sequence matters more than the outcome.
+
+An earlier revision rated R-02 *mitigated* on the strength of the IAM work.
+Post-submission review established the opposite: three of the four logging
+statements were **widened** (`/aws/bedrock-agentcore/runtimes/*` out to
+`/aws/bedrock-agentcore/*`, and `PutResourcePolicy` from
+`harness_NorthstarAssist-*` to the same), and all four gained write access to
 `log-group:/northstar-assist/model-invocations:*` — **the log group recording
-the agent's own model invocations.** The hardening therefore handed the agent's
-identity precisely the anti-forensics capability this threat describes.
+the agent's own model invocations.** The hardening handed the agent's identity
+precisely the anti-forensics capability this threat describes, while the
+document claimed the threat was closed.
 
-`logs:DescribeLogGroups` on `log-group:*` was genuinely narrowed, so the
-enumeration half of the threat is addressed. The tampering half is worse than
-before the work.
+**Now mitigated, and verified at the policy level.** The environment was
+rebuilt on 19 September and the corrected hardening applied. In the deployed
+state:
 
-Root cause, the code fix, and the corrected statements are in
-`docs/iam-hardening-summary.md` §0. The corrected policy was **not re-applied**
-— the environment was torn down before the review — so `iam/after/` remains an
-honest record of what was applied, regression included.
+- `CloudWatchLogsStream` retains its original `…/runtimes/*:log-stream:*`
+  scope and `CloudWatchLogsPutResourcePolicy` its original
+  `…/runtimes/harness_NorthstarAssist-*` scope — the narrowing pass now refuses
+  to replace a statement with anything broader and flags it `KEPT-WOULD-WIDEN`.
+- The harness role holds **no grant of any kind** on
+  `/northstar-assist/model-invocations`. Bedrock delivers those records through
+  `NorthstarAssistBedrockLoggingRole`, which the agent cannot assume.
+- `logs:DescribeLogGroups` on `log-group:*` is narrowed, closing the
+  enumeration half as before.
 
-*Recommended:* re-apply the corrected scoping; grant the harness **no**
-permission on the invocation log group (Bedrock delivers those records through
-`NorthstarAssistBedrockLoggingRole`); add a CloudWatch Logs resource policy
-denying deletion; and export logs to an account the agent role cannot reach.
+Evidence: `iam/iam_after.json` — **AUDIT PASS, 0 statements widened** — read
+back from live IAM by `scripts/22_iam_audit.py --live`. The first submission's
+evidence is preserved unedited in `iam/session1-2026-09-18/`, and the auditor
+run against it still reports the regression, which is what makes the pass on
+the current state meaningful.
+
+**The lesson this threat now carries.** A control can be reported as mitigated
+by a verification step that is structurally incapable of detecting its failure.
+`--verify` confirmed the agent still answered with retrieval; widening a
+permission never stops an agent working, so that check could never have caught
+this. Threats mitigated by a permission change need a verification that asserts
+on the permission.
+
+*Residual / recommended:* add a CloudWatch Logs resource policy denying
+deletion; export logs to an account the agent role cannot reach; and alert on
+`PutRolePolicy` / `CreatePolicyVersion` against these roles via CloudTrail, so
+that re-widening is visible rather than silent.
 
 ---
 

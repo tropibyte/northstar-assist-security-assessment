@@ -1,7 +1,7 @@
 {
   "harness": {
-    "role_name": "AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
-    "arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
+    "role_name": "AmazonBedrockAgentCoreHarnessDefaultServiceRole-4ecgi",
+    "arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-4ecgi",
     "trust_policy": {
       "Version": "2012-10-17",
       "Statement": [
@@ -31,7 +31,7 @@
             "Effect": "Allow",
             "Action": "bedrock:ApplyGuardrail",
             "Resource": [
-              "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+              "arn:aws:bedrock:us-east-1:118924230273:guardrail/wjbkvivpjms4",
               "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
               "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
               "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
@@ -41,8 +41,8 @@
       }
     },
     "attached_policies": {
-      "AmazonBedrockAgentCoreHarnessGatewayPolicy_lh6if": {
-        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreHarnessGatewayPolicy_lh6if",
+      "AmazonBedrockAgentCoreHarnessGatewayPolicy_xvh11": {
+        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreHarnessGatewayPolicy_xvh11",
         "document": {
           "Version": "2012-10-17",
           "Statement": [
@@ -53,15 +53,15 @@
                 "bedrock-agentcore:InvokeGateway"
               ],
               "Resource": [
-                "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy"
+                "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn"
               ]
             }
           ]
         },
         "customer_managed": true
       },
-      "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v": {
-        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "AmazonBedrockAgentCoreHarnessExecutionPolicy_647sw": {
+        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreHarnessExecutionPolicy_647sw",
         "document": {
           "Version": "2012-10-17",
           "Statement": [
@@ -295,8 +295,8 @@
     }
   },
   "gateway": {
-    "role_name": "AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328",
-    "arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328",
+    "role_name": "AmazonBedrockAgentCoreGatewayDefaultServiceRole1789839392565",
+    "arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreGatewayDefaultServiceRole1789839392565",
     "trust_policy": {
       "Version": "2012-10-17",
       "Statement": [
@@ -320,8 +320,8 @@
     },
     "inline_policies": {},
     "attached_policies": {
-      "AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52": {
-        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52",
+      "AmazonBedrockAgentCoreGatewayBasePolicyProd_A816FD": {
+        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreGatewayBasePolicyProd_A816FD",
         "document": {
           "Version": "2012-10-17",
           "Statement": [
@@ -355,8 +355,8 @@
         },
         "customer_managed": true
       },
-      "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2": {
-        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "AmazonBedrockAgentCoreGatewayKBAccessProd_28A9EB": {
+        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreGatewayKBAccessProd_28A9EB",
         "document": {
           "Version": "2012-10-17",
           "Statement": [
@@ -365,7 +365,7 @@
               "Effect": "Allow",
               "Action": "bedrock:GetKnowledgeBase",
               "Resource": [
-                "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+                "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/V2RJQEGEIW"
               ]
             },
             {
@@ -373,7 +373,7 @@
               "Effect": "Allow",
               "Action": "bedrock:Retrieve",
               "Resource": [
-                "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+                "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/V2RJQEGEIW"
               ]
             },
             {
@@ -441,8 +441,8 @@
     }
   },
   "knowledge_base": {
-    "role_name": "AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3",
-    "arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3",
+    "role_name": "AmazonBedrockExecutionRoleForKnowledgeBase_y7cmq",
+    "arn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBase_y7cmq",
     "trust_policy": {
       "Version": "2012-10-17",
       "Statement": [
@@ -466,8 +466,8 @@
     },
     "inline_policies": {},
     "attached_policies": {
-      "AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3": {
-        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3",
+      "AmazonBedrockFoundationModelPolicyForKnowledgeBase_y7cmq": {
+        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockFoundationModelPolicyForKnowledgeBase_y7cmq",
         "document": {
           "Version": "2012-10-17",
           "Statement": [
@@ -500,8 +500,8 @@
         },
         "customer_managed": true
       },
-      "AmazonBedrockCloudWatchPolicyForKnowledgeBase_pcpa3": {
-        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockCloudWatchPolicyForKnowledgeBase_pcpa3",
+      "AmazonBedrockCloudWatchPolicyForKnowledgeBase_y7cmq": {
+        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockCloudWatchPolicyForKnowledgeBase_y7cmq",
         "document": {
           "Version": "2012-10-17",
           "Statement": [
@@ -524,8 +524,8 @@
         },
         "customer_managed": true
       },
-      "AmazonBedrockS3PolicyForKnowledgeBase_pcpa3": {
-        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockS3PolicyForKnowledgeBase_pcpa3",
+      "AmazonBedrockS3PolicyForKnowledgeBase_y7cmq": {
+        "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockS3PolicyForKnowledgeBase_y7cmq",
         "document": {
           "Version": "2012-10-17",
           "Statement": [

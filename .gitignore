@@ -62,3 +62,8 @@ tmp/
 # Assessment tooling and build artefacts (added by the Northstar Assist work)
 .venv-docs/
 northstar-assist-submission.zip
+
+# Session logs are written here by the runbook; they can contain ARNs and
+# account IDs but never credentials. Kept out of git to avoid confusing the
+# second-session evidence with the first.
+run-logs/

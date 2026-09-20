@@ -209,7 +209,7 @@ class Teardown:
                  lambda: iam.delete_role_policy(RoleName=role, PolicyName=APPLY_POLICY_NAME))
 
 
-def verify(cfg) -> dict:
+def check_remaining(cfg) -> dict:
     """List anything project-shaped still present in the account."""
     log("verifying the account is clean", "step")
     remaining: dict[str, list] = {}
@@ -264,6 +264,27 @@ def verify(cfg) -> dict:
     return remaining
 
 
+def verify_clean(cfg, attempts: int = 10, wait: int = 20) -> dict:
+    """Poll until the account is clean, because deletion is asynchronous.
+
+    A harness or knowledge base goes to a Deleting state and keeps listing for
+    a minute or two afterwards. Checking once, immediately after issuing the
+    deletes, reports resources that are already on their way out and tells the
+    operator to go and delete them by hand -- a false alarm that makes a clean
+    teardown look dirty.
+    """
+    for attempt in range(1, attempts + 1):
+        remaining = check_remaining(cfg)
+        if not remaining:
+            return {}
+        if attempt == attempts:
+            log(f"still present after {attempts * wait}s - these need attention", "err")
+            return remaining
+        log(f"  deletion still in progress ({attempt}/{attempts}) - waiting {wait}s")
+        time.sleep(wait)
+    return remaining
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -277,7 +298,7 @@ def main() -> int:
     cfg, state = load_config(), load_state()
 
     if args.verify:
-        remaining = verify(cfg)
+        remaining = verify_clean(cfg)
         write_evidence("teardown_verify.json", remaining)
         return 0 if not remaining else 2
 
@@ -296,7 +317,7 @@ def main() -> int:
         td.inline_policy()
         log(f"swept {len(td.done)}, skipped {len(td.skipped)}, failed {len(td.failed)}",
             "ok" if not td.failed else "warn")
-        remaining = verify(cfg)
+        remaining = verify_clean(cfg)
         write_evidence("teardown_sweep.json",
                        {"deleted": td.done, "skipped": td.skipped,
                         "failed": td.failed, "remaining": remaining})
@@ -332,7 +353,7 @@ def main() -> int:
         state["torn_down_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         save_state(state)
         time.sleep(5)
-        remaining = verify(cfg)
+        remaining = verify_clean(cfg)
         if remaining:
             log("SOME RESOURCES REMAIN - delete them in the console before closing", "err")
             return 2

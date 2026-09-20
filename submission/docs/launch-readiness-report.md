@@ -505,13 +505,49 @@ narrowing them, and granted the harness role write access to the log group
 recording its own model invocations.** Root cause: the narrowing pass computed
 replacement resource sets without ever checking them against the originals — it
 never verified it had narrowed. Threat **R-02** was rated *mitigated* on the
-strength of that work and is re-rated **REGRESSED**.
+strength of that work, which it had not earned.
 
-Full detail, the code fix (`is_narrower()`), and the corrected statements are in
-`docs/iam-hardening-summary.md` §0. The corrected policy was **not re-applied**:
-the environment was torn down before the review, so `iam/after/` remains an
-accurate record of what was actually applied. Re-applying and re-verifying is
-now the first item in that document's §7.
+A **fourth** widening, in no review, was found afterwards by the auditor built
+to catch this class of defect: the knowledge-base `S3GetObjectStatement` went
+from `bucket/*` to `bucket` + `bucket/*`. The console had already written that
+policy correctly and the hardening made it broader. It grants nothing
+exploitable, but it is the same fault, and it was found by a tool rather than
+by re-reading — which is the point.
+
+### Closed by rebuild, 19 September 2026
+
+The environment was rebuilt in the same account and the corrected hardening
+applied, because an after-state that this report itself describes as unverified
+cannot evidence least privilege. Verified against live IAM:
+
+| | First submission | Rebuild |
+| --- | --- | --- |
+| Statements widened | 4 (undetected) | **0** |
+| Statements removed | 9 | **14** |
+| Surviving wildcards | 22 (7 partial uncounted) | **17** |
+| Wildcards without justification | 7 | **0** |
+| Audit verdict | FAIL | **PASS** |
+
+R-02 is re-rated **mitigated, verified at the policy level**. The harness role
+now holds no grant of any kind on `/northstar-assist/model-invocations`.
+
+Three things were added rather than just fixed:
+
+- **`scripts/22_iam_audit.py`** asserts on the policy rather than the service:
+  no statement may grant more than it did, every widening must be declared with
+  a reason, and every surviving wildcard must carry a register entry. It runs
+  offline from committed evidence, so the verdict is reproducible from a clone
+  with no AWS credentials — and pointed at the preserved first-submission
+  evidence it still reports the original regression.
+- **`tests/test_no_widening.py`** replays every captured console policy through
+  the real narrowing pass: 8 policies, 37 statements, 0 widened.
+- **`scripts/24_wildcard_ablation.py`** settles loose wildcards by experiment
+  instead of by adjective. Five statements that the first submission called
+  "loose ... exposure is low" were removed from the live roles and the system
+  retested; none was needed. They are gone rather than justified.
+
+The first submission's evidence is preserved unedited in
+`iam/session1-2026-09-18/`.
 
 This does not change the recommendation — it strengthens the case for
 **Condition 3**-style re-measurement after every change, and it adds a sixth
@@ -519,13 +555,17 @@ condition in spirit: *verification must check the permissions, not only that the
 agent still answers.* A `--verify` step that confirms the agent works cannot
 detect a widening.
 
-Three smaller corrections from the same review: the gateway role's "zero
-wildcards" claim now reads *zero bare wildcards* with three partial wildcards
-listed (§4b of the IAM summary); seven previously unlisted partial wildcards are
-now individually assessed; and an overstated causal claim — that the harness
-role's missing marketplace permissions explained the Anthropic model failures —
-is withdrawn in favour of the account-level `agreementAvailability` state, which
-is the more likely binding constraint and the one the evidence actually supports.
+Three smaller corrections from the same review. The gateway role's "zero
+wildcards" claim was an artefact of a counter that matched only bare
+`Resource: "*"`; partial wildcards are now counted separately and every one is
+registered. The seven previously unlisted partial wildcards are individually
+assessed, and five of them no longer exist. And the overstated causal claim —
+that the harness role's missing marketplace permissions explained the Anthropic
+model failures — stays withdrawn: `agreementAvailability` is an account-level
+state and the role-policy hypothesis was never tested. What *can* now be said,
+because it was tested, is that Titan embedding does not need the grant at all —
+it was removed from the knowledge-base role and a planted document embedded
+cleanly (`scanned=31 new=1 failed=0`).
 
 ---
 

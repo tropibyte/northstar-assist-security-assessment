@@ -622,9 +622,13 @@ def main() -> int:
 
     write_evidence("iam_after.json", after, subdir="iam")
     write_evidence("iam_changes.json", all_changes, subdir="iam")
-    (SUBMISSION / "docs" / "iam-hardening-summary.md").write_text(
+    # Write the machine-generated dump to its OWN file. docs/iam-hardening-
+    # summary.md is a curated deliverable -- it carries the method, the erratum
+    # and the wildcard justifications -- and an --apply run used to silently
+    # overwrite all of that with this raw per-statement listing.
+    (SUBMISSION / "docs" / "iam-hardening-generated.md").write_text(
         render_summary(all_changes, before, after), encoding="utf-8")
-    log("wrote docs/iam-hardening-summary.md", "ok")
+    log("wrote docs/iam-hardening-generated.md (curated summary untouched)", "ok")
 
     if args.plan:
         log("plan only - nothing applied", "ok")

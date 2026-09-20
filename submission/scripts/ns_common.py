@@ -23,9 +23,29 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import boto3
-from botocore.config import Config
-from botocore.exceptions import ClientError, NoCredentialsError, TokenRetrievalError
+# boto3 is imported lazily. This module also carries the paths, logging and
+# config helpers that the documentation pipeline uses, and that pipeline runs
+# in a separate venv with no AWS SDK installed -- a hard import here made
+# render_docs.py fail with ModuleNotFoundError: boto3 while rendering Markdown.
+try:
+    import boto3
+    from botocore.config import Config
+    from botocore.exceptions import (ClientError, NoCredentialsError,
+                                     TokenRetrievalError)
+except ModuleNotFoundError:  # documentation-only environment
+    boto3 = None  # type: ignore[assignment]
+    Config = None  # type: ignore[assignment]
+
+    class _NoBotocore(Exception):
+        """Stand-in so `except ClientError` still parses without botocore."""
+
+    ClientError = NoCredentialsError = TokenRetrievalError = _NoBotocore  # type: ignore
+
+
+def _need_boto3():
+    if boto3 is None:
+        die("boto3 is not installed in this interpreter - use the main .venv "
+            "for anything that talks to AWS")
 
 SUBMISSION = Path(__file__).resolve().parents[1]
 REPO = SUBMISSION.parent
@@ -36,7 +56,8 @@ CONFIG_EXAMPLE = SUBMISSION / "config.example.json"
 
 # Retries matter here: AgentCore control-plane calls throttle readily, and a
 # throttle in the middle of a metered lab session is expensive to redo.
-BOTO_CONFIG = Config(retries={"max_attempts": 8, "mode": "adaptive"})
+BOTO_CONFIG = (Config(retries={"max_attempts": 8, "mode": "adaptive"})
+               if Config is not None else None)
 
 
 # --------------------------------------------------------------- logging ---
@@ -131,7 +152,7 @@ def redact(text: str, state: dict[str, Any] | None = None) -> str:
 
 
 # ------------------------------------------------------------------- aws ---
-def session(cfg: dict[str, Any] | None = None) -> boto3.session.Session:
+def session(cfg: dict[str, Any] | None = None):
     cfg = cfg or load_config()
     profile = os.environ.get("AWS_PROFILE")
     kwargs: dict[str, Any] = {"region_name": cfg["region"]}
@@ -141,12 +162,12 @@ def session(cfg: dict[str, Any] | None = None) -> boto3.session.Session:
 
 
 def client(service: str, cfg: dict[str, Any] | None = None,
-           sess: boto3.session.Session | None = None):
+           sess=None):
     sess = sess or session(cfg)
     return sess.client(service, config=BOTO_CONFIG)
 
 
-def whoami(sess: boto3.session.Session | None = None) -> dict[str, str]:
+def whoami(sess=None) -> dict[str, str]:
     """Confirm credentials work and return the caller identity.
 
     Cloud Lab credentials expire mid-session; catching that here turns a

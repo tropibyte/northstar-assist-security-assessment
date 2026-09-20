@@ -1,0 +1,19 @@
+{
+  "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreGatewayBasePolicyProd_A816FD",
+  "document": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "GetGateway",
+        "Effect": "Allow",
+        "Action": [
+          "bedrock-agentcore:GetGateway"
+        ],
+        "Resource": [
+          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn",
+          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn/*"
+        ]
+      }
+    ]
+  }
+}

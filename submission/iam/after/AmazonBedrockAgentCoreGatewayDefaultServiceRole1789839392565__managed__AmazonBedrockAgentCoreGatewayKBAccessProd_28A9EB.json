@@ -1,0 +1,40 @@
+{
+  "arn": "arn:aws:iam::118924230273:policy/service-role/AmazonBedrockAgentCoreGatewayKBAccessProd_28A9EB",
+  "document": {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowBedrockGetKnowledgeBaseFromKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:GetKnowledgeBase",
+        "Resource": [
+          "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/V2RJQEGEIW"
+        ]
+      },
+      {
+        "Sid": "AllowBedrockRetrieveFromKnowledgeBase",
+        "Effect": "Allow",
+        "Action": "bedrock:Retrieve",
+        "Resource": [
+          "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/V2RJQEGEIW"
+        ]
+      },
+      {
+        "Sid": "AllowBedrockInvokeModelForKnowledgeBase",
+        "Effect": "Allow",
+        "Action": [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ],
+        "Resource": [
+          "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+        ],
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:CalledVia": "bedrock.amazonaws.com"
+          }
+        }
+      }
+    ]
+  }
+}

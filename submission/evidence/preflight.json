@@ -71,47 +71,15 @@
     "model_count": 115
   },
   "existing_resources": {
-    "s3_buckets": [
-      "northstar-assist-kb-41071520"
-    ],
-    "knowledge_bases": [
-      {
-        "id": "MHJCWFFIBH",
-        "name": "northstar-assist-kb",
-        "status": "ACTIVE"
-      }
-    ],
-    "gateways": [
-      {
-        "id": "northstar-assist-gateway-1jkdshz4iy",
-        "name": "northstar-assist-gateway",
-        "status": "READY"
-      }
-    ],
-    "harnesses": [
-      {
-        "id": "NorthstarAssist-MUUuZ1Tr6j",
-        "name": "NorthstarAssist",
-        "arn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:harness/NorthstarAssist-MUUuZ1Tr6j",
-        "status": "READY"
-      }
-    ],
+    "s3_buckets": [],
+    "knowledge_bases": [],
+    "gateways": [],
+    "harnesses": [],
     "guardrails": []
   },
   "model_invocation_logging": {
-    "enabled": true,
-    "destinations": [
-      "cloudWatchConfig"
-    ],
-    "config": {
-      "cloudWatchConfig": {
-        "logGroupName": "/northstar-assist/model-invocations",
-        "roleArn": "arn:aws:iam::118924230273:role/NorthstarAssistBedrockLoggingRole"
-      },
-      "textDataDeliveryEnabled": true,
-      "imageDataDeliveryEnabled": false,
-      "embeddingDataDeliveryEnabled": false,
-      "videoDataDeliveryEnabled": true
-    }
+    "enabled": false,
+    "destinations": [],
+    "config": {}
   }
 }

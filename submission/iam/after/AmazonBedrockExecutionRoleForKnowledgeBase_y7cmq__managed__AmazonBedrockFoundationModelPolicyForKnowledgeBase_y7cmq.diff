@@ -1,0 +1,12 @@
+--- before/AmazonBedrockExecutionRoleForKnowledgeBase_y7cmq__managed__AmazonBedrockFoundationModelPolicyForKnowledgeBase_y7cmq.json
++++ after/AmazonBedrockExecutionRoleForKnowledgeBase_y7cmq__managed__AmazonBedrockFoundationModelPolicyForKnowledgeBase_y7cmq.json
+@@ -13,8 +13,7 @@
+     {
+       "Action": [
+         "aws-marketplace:Subscribe",
+-        "aws-marketplace:ViewSubscriptions",
+-        "aws-marketplace:Unsubscribe"
++        "aws-marketplace:ViewSubscriptions"
+       ],
+       "Condition": {
+         "StringEquals": {

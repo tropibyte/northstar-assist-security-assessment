@@ -1,0 +1,1094 @@
+{
+  "generated": "2026-09-19T17:34:49+00:00",
+  "source": "captured iam/before vs iam/after",
+  "account": "",
+  "verdict": "FAIL",
+  "summary": {
+    "statements": 37,
+    "narrowed": 5,
+    "removed": 9,
+    "unchanged": 18,
+    "widened_declared": 1,
+    "widened": 4,
+    "wildcards": 23,
+    "wildcards_bare": 8,
+    "wildcards_partial": 15,
+    "wildcards_unjustified": 12
+  },
+  "statements": [
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52",
+      "sid": "GetGateway",
+      "verdict": "NARROWED",
+      "widened": false,
+      "detail": "resources 1 -> 2",
+      "before_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy/*"
+      ],
+      "before_actions": [
+        "bedrock-agentcore:GetGateway"
+      ],
+      "after_actions": [
+        "bedrock-agentcore:GetGateway"
+      ]
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52",
+      "sid": "GetConfigurationBundleVersion",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:configuration-bundle/*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:configuration-bundle/*"
+      ],
+      "before_actions": [
+        "bedrock-agentcore:GetConfigurationBundleVersion"
+      ],
+      "after_actions": [
+        "bedrock-agentcore:GetConfigurationBundleVersion"
+      ]
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "sid": "AllowBedrockGetKnowledgeBaseFromKnowledgeBase",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+      ],
+      "before_actions": [
+        "bedrock:GetKnowledgeBase"
+      ],
+      "after_actions": [
+        "bedrock:GetKnowledgeBase"
+      ]
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "sid": "AllowBedrockRetrieveFromKnowledgeBase",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH"
+      ],
+      "before_actions": [
+        "bedrock:Retrieve"
+      ],
+      "after_actions": [
+        "bedrock:Retrieve"
+      ]
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "sid": "AllowBedrockInvokeModelForKnowledgeBase",
+      "verdict": "NARROWED",
+      "widened": false,
+      "detail": "resources 4 -> 1",
+      "before_resources": [
+        "arn:aws:bedrock:*::foundation-model/*",
+        "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*",
+        "arn:aws:bedrock:us-east-1:118924230273:provisioned-model/*",
+        "arn:aws:bedrock:us-east-1:118924230273:custom-model/*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "before_actions": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream"
+      ],
+      "after_actions": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream"
+      ]
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "sid": "AllowBedrockGetInferenceProfileForKnowledgeBase",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*"
+      ],
+      "before_actions": [
+        "bedrock:GetInferenceProfile"
+      ],
+      "after_actions": [
+        "bedrock:GetInferenceProfile"
+      ]
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "sid": "AllowBedrockApplyGuardrailForKnowledgeBase",
+      "verdict": "WIDENED-DECLARED",
+      "widened": false,
+      "detail": "declared new grant: ['arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0', 'arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0', 'arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0']. Net narrowing. The guardrail dimension goes from `guardrail/*` -- every guardrail in the account -- to this one guardrail ID. The profile ARNs are a new resource TYPE that the original did not address, not a broadening of the original grant.",
+      "before_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail/*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
+      ],
+      "before_actions": [
+        "bedrock:ApplyGuardrail"
+      ],
+      "after_actions": [
+        "bedrock:ApplyGuardrail"
+      ],
+      "declared_reason": "A STANDARD-tier guardrail is invoked through a cross-Region guardrail PROFILE, and the profile ARN is regional and follows request routing. bedrock:ApplyGuardrail must therefore be granted on the profile in every region the profile routes to (us-east-1, us-east-2, us-west-2) or calls 403 intermittently. The console's sample policy grants only `guardrail/*` and cannot work at STANDARD tier.",
+      "net_effect": "Net narrowing. The guardrail dimension goes from `guardrail/*` -- every guardrail in the account -- to this one guardrail ID. The profile ARNs are a new resource TYPE that the original did not address, not a broadening of the original grant."
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "sid": "AllowBedrockAgenticRetrieveFromKnowledgeBase",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "bedrock:AgenticRetrieveStream"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "gateway",
+      "policy": "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2",
+      "sid": "AllowBedrockRerankForKnowledgeBase",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "bedrock:Rerank"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "BedrockModelInvocation",
+      "verdict": "NARROWED",
+      "widened": false,
+      "detail": "resources 2 -> 4",
+      "before_resources": [
+        "arn:aws:bedrock:*::foundation-model/*",
+        "arn:aws:bedrock:us-east-1:118924230273:*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:inference-profile/us.amazon.nova-2-lite-v1:0",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-2-lite-v1:0",
+        "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-2-lite-v1:0",
+        "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-2-lite-v1:0"
+      ],
+      "before_actions": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream"
+      ],
+      "after_actions": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "BedrockMantleInference",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock-mantle:us-east-1:118924230273:*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock-mantle:us-east-1:118924230273:*"
+      ],
+      "before_actions": [
+        "bedrock-mantle:CreateInference"
+      ],
+      "after_actions": [
+        "bedrock-mantle:CreateInference"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "BedrockMantleCallWithBearerToken",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "bedrock-mantle:CallWithBearerToken"
+      ],
+      "after_actions": [
+        "bedrock-mantle:CallWithBearerToken"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "EcrPublicTokenAccess",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "ecr-public:GetAuthorizationToken"
+      ],
+      "after_actions": [
+        "ecr-public:GetAuthorizationToken"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "StsForEcrPublicPull",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "sts:GetServiceBearerToken"
+      ],
+      "after_actions": [
+        "sts:GetServiceBearerToken"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "EcrManagedImagePull",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:ecr:us-east-1:*:repository/harness-*"
+      ],
+      "after_resources": [
+        "arn:aws:ecr:us-east-1:*:repository/harness-*"
+      ],
+      "before_actions": [
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchCheckLayerAvailability"
+      ],
+      "after_actions": [
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchCheckLayerAvailability"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "EcrManagedImageToken",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "after_actions": [
+        "ecr:GetAuthorizationToken"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "XRayTracingAccess",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords",
+        "xray:GetSamplingRules",
+        "xray:GetSamplingTargets"
+      ],
+      "after_actions": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords",
+        "xray:GetSamplingRules",
+        "xray:GetSamplingTargets"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "CloudWatchLogsGroup",
+      "verdict": "WIDENED",
+      "widened": true,
+      "detail": "resources not covered by BEFORE: ['arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*', 'arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*']",
+      "before_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*"
+      ],
+      "after_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+      ],
+      "before_actions": [
+        "logs:CreateLogGroup",
+        "logs:DescribeLogStreams"
+      ],
+      "after_actions": [
+        "logs:CreateLogGroup",
+        "logs:DescribeLogStreams"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "CloudWatchLogsDescribeGroups",
+      "verdict": "NARROWED",
+      "widened": false,
+      "detail": "resources 1 -> 2",
+      "before_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:*"
+      ],
+      "after_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+      ],
+      "before_actions": [
+        "logs:DescribeLogGroups"
+      ],
+      "after_actions": [
+        "logs:DescribeLogGroups"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "CloudWatchLogsStream",
+      "verdict": "WIDENED",
+      "widened": true,
+      "detail": "resources not covered by BEFORE: ['arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*', 'arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*']",
+      "before_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
+      ],
+      "after_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+      ],
+      "before_actions": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "after_actions": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "CloudWatchLogsPutResourcePolicy",
+      "verdict": "WIDENED",
+      "widened": true,
+      "detail": "resources not covered by BEFORE: ['arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*', 'arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*']",
+      "before_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*"
+      ],
+      "after_resources": [
+        "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+        "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+      ],
+      "before_actions": [
+        "logs:PutResourcePolicy"
+      ],
+      "after_actions": [
+        "logs:PutResourcePolicy"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "CloudWatchMetricsPublish",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "cloudwatch:PutMetricData"
+      ],
+      "after_actions": [
+        "cloudwatch:PutMetricData"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "AgentCoreWorkloadIdentity",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:workload-identity-directory/default",
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:workload-identity-directory/default/workload-identity/harness_NorthstarAssist-*"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:workload-identity-directory/default",
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:workload-identity-directory/default/workload-identity/harness_NorthstarAssist-*"
+      ],
+      "before_actions": [
+        "bedrock-agentcore:GetWorkloadAccessToken",
+        "bedrock-agentcore:GetWorkloadAccessTokenForJWT"
+      ],
+      "after_actions": [
+        "bedrock-agentcore:GetWorkloadAccessToken",
+        "bedrock-agentcore:GetWorkloadAccessTokenForJWT"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "AgentCoreBrowserDefault",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:aws:browser/*"
+      ],
+      "before_actions": [
+        "bedrock-agentcore:StartBrowserSession",
+        "bedrock-agentcore:StopBrowserSession",
+        "bedrock-agentcore:GetBrowserSession",
+        "bedrock-agentcore:ListBrowserSessions",
+        "bedrock-agentcore:UpdateBrowserStream",
+        "bedrock-agentcore:ConnectBrowserAutomationStream",
+        "bedrock-agentcore:ConnectBrowserLiveViewStream"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "AgentCoreCodeInterpreterDefault",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:aws:code-interpreter/*"
+      ],
+      "before_actions": [
+        "bedrock-agentcore:StartCodeInterpreterSession",
+        "bedrock-agentcore:StopCodeInterpreterSession",
+        "bedrock-agentcore:GetCodeInterpreterSession",
+        "bedrock-agentcore:ListCodeInterpreterSessions",
+        "bedrock-agentcore:InvokeCodeInterpreter"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "EFSClientAccess",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "arn:aws:elasticfilesystem:us-east-1:118924230273:file-system/*"
+      ],
+      "before_actions": [
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "EFSDescribe",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "arn:aws:elasticfilesystem:us-east-1:118924230273:file-system/*",
+        "arn:aws:elasticfilesystem:us-east-1:118924230273:access-point/*"
+      ],
+      "before_actions": [
+        "elasticfilesystem:DescribeAccessPoints",
+        "elasticfilesystem:DescribeMountTargets"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "S3FilesClientAccess",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "arn:aws:s3files:us-east-1:118924230273:file-system/*"
+      ],
+      "before_actions": [
+        "s3files:ClientMount",
+        "s3files:ClientWrite",
+        "s3files:ClientRootAccess"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "S3FilesDescribe",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "arn:aws:s3files:us-east-1:118924230273:file-system/*",
+        "arn:aws:s3files:us-east-1:118924230273:file-system/*/access-point/*"
+      ],
+      "before_actions": [
+        "s3files:GetAccessPoint",
+        "s3files:ListMountTargets"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v",
+      "sid": "AgentCoreMemory",
+      "verdict": "REMOVED",
+      "widened": false,
+      "detail": "statement deleted entirely",
+      "before_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:memory/NorthstarAssist-*"
+      ],
+      "before_actions": [
+        "bedrock-agentcore:CreateEvent",
+        "bedrock-agentcore:DeleteEvent",
+        "bedrock-agentcore:GetEvent",
+        "bedrock-agentcore:ListEvents",
+        "bedrock-agentcore:RetrieveMemoryRecords"
+      ],
+      "after_resources": [],
+      "after_actions": []
+    },
+    {
+      "role": "harness",
+      "policy": "AmazonBedrockAgentCoreHarnessGatewayPolicy_lh6if",
+      "sid": "AgentCoreGatewayAccess",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy"
+      ],
+      "before_actions": [
+        "bedrock-agentcore:InvokeGateway"
+      ],
+      "after_actions": [
+        "bedrock-agentcore:InvokeGateway"
+      ]
+    },
+    {
+      "role": "harness",
+      "policy": "NorthstarAssistApplyGuardrail",
+      "sid": "ApplyNorthstarGuardrail",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+        "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
+        "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
+      ],
+      "before_actions": [
+        "bedrock:ApplyGuardrail"
+      ],
+      "after_actions": [
+        "bedrock:ApplyGuardrail"
+      ]
+    },
+    {
+      "role": "kb",
+      "policy": "AmazonBedrockCloudWatchPolicyForKnowledgeBase_pcpa3",
+      "sid": "CloudWatchWritePermissionStatement",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "cloudwatch:PutMetricData"
+      ],
+      "after_actions": [
+        "cloudwatch:PutMetricData"
+      ]
+    },
+    {
+      "role": "kb",
+      "policy": "AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3",
+      "sid": "BedrockInvokeModelStatement",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "after_resources": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "before_actions": [
+        "bedrock:InvokeModel"
+      ],
+      "after_actions": [
+        "bedrock:InvokeModel"
+      ]
+    },
+    {
+      "role": "kb",
+      "policy": "AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3",
+      "sid": "MarketplaceOperationsFromBedrockFor3pModels",
+      "verdict": "NARROWED",
+      "widened": false,
+      "detail": "actions removed: 1",
+      "before_resources": [
+        "*"
+      ],
+      "after_resources": [
+        "*"
+      ],
+      "before_actions": [
+        "aws-marketplace:Subscribe",
+        "aws-marketplace:ViewSubscriptions",
+        "aws-marketplace:Unsubscribe"
+      ],
+      "after_actions": [
+        "aws-marketplace:Subscribe",
+        "aws-marketplace:ViewSubscriptions"
+      ]
+    },
+    {
+      "role": "kb",
+      "policy": "AmazonBedrockS3PolicyForKnowledgeBase_pcpa3",
+      "sid": "S3ListBucketStatement",
+      "verdict": "UNCHANGED",
+      "widened": false,
+      "detail": "identical to the console original",
+      "before_resources": [
+        "arn:aws:s3:::northstar-assist-kb-41071520"
+      ],
+      "after_resources": [
+        "arn:aws:s3:::northstar-assist-kb-41071520"
+      ],
+      "before_actions": [
+        "s3:ListBucket"
+      ],
+      "after_actions": [
+        "s3:ListBucket"
+      ]
+    },
+    {
+      "role": "kb",
+      "policy": "AmazonBedrockS3PolicyForKnowledgeBase_pcpa3",
+      "sid": "S3GetObjectStatement",
+      "verdict": "WIDENED",
+      "widened": true,
+      "detail": "resources not covered by BEFORE: ['arn:aws:s3:::northstar-assist-kb-41071520']",
+      "before_resources": [
+        "arn:aws:s3:::northstar-assist-kb-41071520/*"
+      ],
+      "after_resources": [
+        "arn:aws:s3:::northstar-assist-kb-41071520",
+        "arn:aws:s3:::northstar-assist-kb-41071520/*"
+      ],
+      "before_actions": [
+        "s3:GetObject"
+      ],
+      "after_actions": [
+        "s3:GetObject"
+      ]
+    }
+  ],
+  "wildcards": [
+    {
+      "role": "gateway",
+      "sid": "GetGateway",
+      "resource": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy/*",
+      "kind": "partial",
+      "actions": [
+        "bedrock-agentcore:GetGateway"
+      ],
+      "classification": "SCOPED",
+      "justified": true,
+      "reason": "Scoped to this gateway; the `*` covers its own sub-resources. Read-only.",
+      "evidence": null
+    },
+    {
+      "role": "gateway",
+      "sid": "GetConfigurationBundleVersion",
+      "resource": "arn:aws:bedrock-agentcore:us-east-1:118924230273:configuration-bundle/*",
+      "kind": "partial",
+      "actions": [
+        "bedrock-agentcore:GetConfigurationBundleVersion"
+      ],
+      "classification": "NECESSARY",
+      "justified": false,
+      "reason": "NECESSARY requires an 'evidence' pointer to an ablation run showing removal breaks the system"
+    },
+    {
+      "role": "gateway",
+      "sid": "AllowBedrockGetInferenceProfileForKnowledgeBase",
+      "resource": "arn:aws:bedrock:us-east-1:118924230273:inference-profile/*",
+      "kind": "partial",
+      "actions": [
+        "bedrock:GetInferenceProfile"
+      ],
+      "classification": "NECESSARY",
+      "justified": false,
+      "reason": "NECESSARY requires an 'evidence' pointer to an ablation run showing removal breaks the system"
+    },
+    {
+      "role": "harness",
+      "sid": "BedrockMantleInference",
+      "resource": "arn:aws:bedrock-mantle:us-east-1:118924230273:*",
+      "kind": "partial",
+      "actions": [
+        "bedrock-mantle:CreateInference"
+      ],
+      "classification": "NECESSARY",
+      "justified": false,
+      "reason": "NECESSARY requires an 'evidence' pointer to an ablation run showing removal breaks the system"
+    },
+    {
+      "role": "harness",
+      "sid": "BedrockMantleCallWithBearerToken",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "bedrock-mantle:CallWithBearerToken"
+      ],
+      "classification": "UNAVOIDABLE",
+      "justified": true,
+      "reason": "Bearer-token exchange is an identity operation with no resource to name. `bedrock-mantle` is an undocumented internal service backing AgentCore inference; it publishes no resource-level ARNs for this action.",
+      "evidence": null
+    },
+    {
+      "role": "harness",
+      "sid": "EcrPublicTokenAccess",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "ecr-public:GetAuthorizationToken"
+      ],
+      "classification": "UNAVOIDABLE",
+      "justified": true,
+      "reason": "`ecr-public:GetAuthorizationToken` returns a registry-wide credential and is documented by AWS as not supporting resource-level permissions.",
+      "evidence": null
+    },
+    {
+      "role": "harness",
+      "sid": "StsForEcrPublicPull",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "sts:GetServiceBearerToken"
+      ],
+      "classification": "UNAVOIDABLE",
+      "justified": true,
+      "reason": "STS bearer-token issuance takes no resource. Constrained in practice by the ECR Public pull it authorises, not by ARN.",
+      "evidence": null
+    },
+    {
+      "role": "harness",
+      "sid": "EcrManagedImagePull",
+      "resource": "arn:aws:ecr:us-east-1:*:repository/harness-*",
+      "kind": "partial",
+      "actions": [
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchCheckLayerAvailability"
+      ],
+      "classification": "SCOPED",
+      "justified": true,
+      "reason": "Repository prefix is pinned to `harness-*`. The remaining `*` is the ACCOUNT field, because AWS publishes AgentCore harness runtime images from an AWS-owned account whose ID is not documented. Read-only image pull; it cannot push or delete.",
+      "evidence": null
+    },
+    {
+      "role": "harness",
+      "sid": "EcrManagedImageToken",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "classification": "UNAVOIDABLE",
+      "justified": true,
+      "reason": "Same as the public variant: the authorization token is registry-scoped, and ECR does not accept a repository ARN on this action.",
+      "evidence": null
+    },
+    {
+      "role": "harness",
+      "sid": "XRayTracingAccess",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords",
+        "xray:GetSamplingRules",
+        "xray:GetSamplingTargets"
+      ],
+      "classification": "UNAVOIDABLE",
+      "justified": true,
+      "reason": "X-Ray segment ingestion has no resource model; AWS documents these four actions as requiring Resource \"*\". Write-only telemetry -- it cannot read traces.",
+      "evidence": null
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsGroup",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+      "kind": "partial",
+      "actions": [
+        "logs:CreateLogGroup",
+        "logs:DescribeLogStreams"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsGroup",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*",
+      "kind": "partial",
+      "actions": [
+        "logs:CreateLogGroup",
+        "logs:DescribeLogStreams"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsDescribeGroups",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+      "kind": "partial",
+      "actions": [
+        "logs:DescribeLogGroups"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsDescribeGroups",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*",
+      "kind": "partial",
+      "actions": [
+        "logs:DescribeLogGroups"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsStream",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+      "kind": "partial",
+      "actions": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsStream",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*",
+      "kind": "partial",
+      "actions": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsPutResourcePolicy",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
+      "kind": "partial",
+      "actions": [
+        "logs:PutResourcePolicy"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchLogsPutResourcePolicy",
+      "resource": "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*",
+      "kind": "partial",
+      "actions": [
+        "logs:PutResourcePolicy"
+      ],
+      "classification": "SCOPED",
+      "justified": false,
+      "reason": "live resource 'arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*' does not match registered pattern 'arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*'"
+    },
+    {
+      "role": "harness",
+      "sid": "CloudWatchMetricsPublish",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "cloudwatch:PutMetricData"
+      ],
+      "classification": "UNAVOIDABLE",
+      "justified": true,
+      "reason": "PutMetricData supports no resource-level permission. Narrowed in practice by the cloudwatch:namespace condition key, which is the only available control.",
+      "evidence": null
+    },
+    {
+      "role": "harness",
+      "sid": "AgentCoreWorkloadIdentity",
+      "resource": "arn:aws:bedrock-agentcore:us-east-1:118924230273:workload-identity-directory/default/workload-identity/harness_NorthstarAssist-*",
+      "kind": "partial",
+      "actions": [
+        "bedrock-agentcore:GetWorkloadAccessToken",
+        "bedrock-agentcore:GetWorkloadAccessTokenForJWT"
+      ],
+      "classification": "SCOPED",
+      "justified": true,
+      "reason": "Scoped to this harness's own workload identity; the `*` covers only the generated suffix AgentCore appends to the harness name. It reaches no other workload.",
+      "evidence": null
+    },
+    {
+      "role": "kb",
+      "sid": "CloudWatchWritePermissionStatement",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "cloudwatch:PutMetricData"
+      ],
+      "classification": "UNAVOIDABLE",
+      "justified": true,
+      "reason": "Identical to the harness case: the knowledge base publishes ingestion metrics and PutMetricData cannot be resource-scoped.",
+      "evidence": null
+    },
+    {
+      "role": "kb",
+      "sid": "MarketplaceOperationsFromBedrockFor3pModels",
+      "resource": "*",
+      "kind": "bare",
+      "actions": [
+        "aws-marketplace:Subscribe",
+        "aws-marketplace:ViewSubscriptions"
+      ],
+      "classification": "UNJUSTIFIED",
+      "justified": false,
+      "reason": "no entry for 'kb/MarketplaceOperationsFromBedrockFor3pModels' in wildcard-register.json"
+    },
+    {
+      "role": "kb",
+      "sid": "S3GetObjectStatement",
+      "resource": "arn:aws:s3:::northstar-assist-kb-41071520/*",
+      "kind": "partial",
+      "actions": [
+        "s3:GetObject"
+      ],
+      "classification": "SCOPED",
+      "justified": true,
+      "reason": "Objects within the corpus bucket only -- the textbook least-privilege shape for this action, and further constrained by an aws:ResourceAccount condition. The console generated this correctly; hardening leaves it untouched.",
+      "evidence": null
+    }
+  ]
+}

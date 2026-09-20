@@ -1,8 +1,8 @@
 {
   "harness": {
     "NorthstarAssistApplyGuardrail": [],
-    "AmazonBedrockAgentCoreHarnessGatewayPolicy_lh6if (managed)": [],
-    "AmazonBedrockAgentCoreHarnessExecutionPolicy_le77v (managed)": [
+    "AmazonBedrockAgentCoreHarnessGatewayPolicy_xvh11 (managed)": [],
+    "AmazonBedrockAgentCoreHarnessExecutionPolicy_647sw (managed)": [
       {
         "sid": "BedrockModelInvocation",
         "change": "NARROWED",
@@ -106,8 +106,8 @@
           "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*"
         ],
         "after": [
-          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
-          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
         ],
         "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
       },
@@ -121,14 +121,14 @@
           "arn:aws:logs:us-east-1:118924230273:log-group:*"
         ],
         "after": [
-          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
-          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
         ],
         "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
       },
       {
         "sid": "CloudWatchLogsStream",
-        "change": "NARROWED",
+        "change": "KEPT-WOULD-WIDEN",
         "actions": [
           "logs:CreateLogStream",
           "logs:PutLogEvents"
@@ -137,14 +137,17 @@
           "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
         ],
         "after": [
-          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
-          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
         ],
-        "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
+        "rejected": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
+        ],
+        "rationale": "the computed replacement would have granted MORE than the original statement, so the original was kept. A narrowing pass must never widen."
       },
       {
         "sid": "CloudWatchLogsPutResourcePolicy",
-        "change": "NARROWED",
+        "change": "KEPT-WOULD-WIDEN",
         "actions": [
           "logs:PutResourcePolicy"
         ],
@@ -152,10 +155,13 @@
           "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*"
         ],
         "after": [
-          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/*",
-          "arn:aws:logs:us-east-1:118924230273:log-group:/northstar-assist/model-invocations:*"
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*"
         ],
-        "rationale": "write access limited to this system's log groups; broad logs:* also permits reading and deleting other services' logs, which is how an attacker covers tracks."
+        "rejected": [
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*",
+          "arn:aws:logs:us-east-1:118924230273:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
+        ],
+        "rationale": "the computed replacement would have granted MORE than the original statement, so the original was kept. A narrowing pass must never widen."
       },
       {
         "sid": "CloudWatchMetricsPublish",
@@ -256,7 +262,7 @@
     ]
   },
   "gateway": {
-    "AmazonBedrockAgentCoreGatewayBasePolicyProd_6AAF52 (managed)": [
+    "AmazonBedrockAgentCoreGatewayBasePolicyProd_A816FD (managed)": [
       {
         "sid": "GetGateway",
         "change": "NARROWED",
@@ -267,13 +273,13 @@
           "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-*"
         ],
         "after": [
-          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
-          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy/*"
+          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn",
+          "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn/*"
         ],
         "rationale": "the harness has one gateway; invoking arbitrary gateways would reach tools and data this agent was never authorised for."
       }
     ],
-    "AmazonBedrockAgentCoreGatewayKBAccessProd_7B6CA2 (managed)": [
+    "AmazonBedrockAgentCoreGatewayKBAccessProd_28A9EB (managed)": [
       {
         "sid": "AllowBedrockAgenticRetrieveFromKnowledgeBase",
         "change": "REMOVED",
@@ -312,7 +318,7 @@
       },
       {
         "sid": "AllowBedrockApplyGuardrailForKnowledgeBase",
-        "change": "NARROWED",
+        "change": "KEPT-WOULD-WIDEN",
         "actions": [
           "bedrock:ApplyGuardrail"
         ],
@@ -320,17 +326,20 @@
           "arn:aws:bedrock:us-east-1:118924230273:guardrail/*"
         ],
         "after": [
-          "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+          "arn:aws:bedrock:us-east-1:118924230273:guardrail/*"
+        ],
+        "rejected": [
+          "arn:aws:bedrock:us-east-1:118924230273:guardrail/wjbkvivpjms4",
           "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0",
           "arn:aws:bedrock:us-east-2:118924230273:guardrail-profile/us.guardrail.v1:0",
           "arn:aws:bedrock:us-west-2:118924230273:guardrail-profile/us.guardrail.v1:0"
         ],
-        "rationale": "ApplyGuardrail on * lets the role apply any guardrail in the account, including a permissive one it creates or finds, which defeats the control it is supposed to enforce."
+        "rationale": "the computed replacement would have granted MORE than the original statement, so the original was kept. A narrowing pass must never widen."
       }
     ]
   },
   "knowledge_base": {
-    "AmazonBedrockFoundationModelPolicyForKnowledgeBase_pcpa3 (managed)": [
+    "AmazonBedrockFoundationModelPolicyForKnowledgeBase_y7cmq (managed)": [
       {
         "sid": "MarketplaceOperationsFromBedrockFor3pModels",
         "change": "ACTION-REMOVED",
@@ -361,7 +370,7 @@
         "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
       }
     ],
-    "AmazonBedrockCloudWatchPolicyForKnowledgeBase_pcpa3 (managed)": [
+    "AmazonBedrockCloudWatchPolicyForKnowledgeBase_y7cmq (managed)": [
       {
         "sid": "CloudWatchWritePermissionStatement",
         "change": "UNCHANGED-WILDCARD",
@@ -377,10 +386,10 @@
         "rationale": "wildcard remains - review manually and justify explicitly in the summary, the rubric forbids unjustified wildcards."
       }
     ],
-    "AmazonBedrockS3PolicyForKnowledgeBase_pcpa3 (managed)": [
+    "AmazonBedrockS3PolicyForKnowledgeBase_y7cmq (managed)": [
       {
         "sid": "S3GetObjectStatement",
-        "change": "NARROWED",
+        "change": "KEPT-WOULD-WIDEN",
         "actions": [
           "s3:GetObject"
         ],
@@ -388,10 +397,13 @@
           "arn:aws:s3:::northstar-assist-kb-41071520/*"
         ],
         "after": [
+          "arn:aws:s3:::northstar-assist-kb-41071520/*"
+        ],
+        "rejected": [
           "arn:aws:s3:::northstar-assist-kb-41071520",
           "arn:aws:s3:::northstar-assist-kb-41071520/*"
         ],
-        "rationale": "read access limited to the document bucket instead of every bucket the account holds."
+        "rationale": "the computed replacement would have granted MORE than the original statement, so the original was kept. A narrowing pass must never widen."
       }
     ]
   }

@@ -1,11 +1,11 @@
 {
-  "harnessId": "NorthstarAssist-MUUuZ1Tr6j",
+  "harnessId": "NorthstarAssist-0c9NNcCqVr",
   "harnessName": "NorthstarAssist",
-  "arn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:harness/NorthstarAssist-MUUuZ1Tr6j",
+  "arn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:harness/NorthstarAssist-0c9NNcCqVr",
   "status": "READY",
-  "harnessVersion": "2",
-  "executionRoleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
-  "executionRoleName": "AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
+  "harnessVersion": "1",
+  "executionRoleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-4ecgi",
+  "executionRoleName": "AmazonBedrockAgentCoreHarnessDefaultServiceRole-4ecgi",
   "model": {
     "bedrockModelConfig": {
       "modelId": "us.amazon.nova-2-lite-v1:0",
@@ -20,10 +20,10 @@
   "tools": [
     {
       "type": "agentcore_gateway",
-      "name": "northstar-assist-gateway-1jkdshz4iy",
+      "name": "northstar-assist-gateway-lhirtedegn",
       "config": {
         "agentCoreGateway": {
-          "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
+          "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn",
           "outboundAuth": {
             "awsIam": {}
           }

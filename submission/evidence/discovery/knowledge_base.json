@@ -1,10 +1,10 @@
 {
-  "knowledgeBaseId": "MHJCWFFIBH",
+  "knowledgeBaseId": "V2RJQEGEIW",
   "name": "northstar-assist-kb",
-  "arn": "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/MHJCWFFIBH",
+  "arn": "arn:aws:bedrock:us-east-1:118924230273:knowledge-base/V2RJQEGEIW",
   "status": "ACTIVE",
-  "roleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3",
-  "roleName": "AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3",
+  "roleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockExecutionRoleForKnowledgeBase_y7cmq",
+  "roleName": "AmazonBedrockExecutionRoleForKnowledgeBase_y7cmq",
   "knowledgeBaseConfiguration": {
     "type": "MANAGED",
     "managedKnowledgeBaseConfiguration": {
@@ -21,7 +21,7 @@
   "storageConfiguration": null,
   "data_sources": [
     {
-      "dataSourceId": "MK4SIJZUXC",
+      "dataSourceId": "UTGGHNAAGJ",
       "name": "northstar-documents",
       "status": "AVAILABLE",
       "dataSourceConfiguration": {
@@ -42,7 +42,7 @@
               "videoExtractionStatus": "ENABLED"
             }
           },
-          "connectorParameters": "{\"type\":\"S3\",\"filterConfiguration\":{\"maxFileSizeInMegaBytes\":\"10240\"},\"connectionConfiguration\":{\"bucketName\":\"northstar-assist-kb-41071520\",\"bucketOwnerAccountId\":\"118924230273\",\"bucketArn\":\"arn:aws:s3:::northstar-assist-kb-41071520\"},\"aclEnabled\":false,\"version\":\"1\"}"
+          "connectorParameters": "{\"type\":\"S3\",\"filterConfiguration\":{\"maxFileSizeInMegaBytes\":\"10240\",\"inclusionPrefixes\":[\"northstar-knowledge-base\"]},\"connectionConfiguration\":{\"bucketName\":\"northstar-assist-kb-41071520\",\"bucketOwnerAccountId\":\"118924230273\",\"bucketArn\":\"arn:aws:s3:::northstar-assist-kb-41071520\"},\"aclEnabled\":false,\"version\":\"1\"}"
         }
       },
       "vectorIngestionConfiguration": {
@@ -52,17 +52,17 @@
       },
       "ingestion_jobs": [
         {
-          "knowledgeBaseId": "MHJCWFFIBH",
-          "dataSourceId": "MK4SIJZUXC",
-          "ingestionJobId": "AMIEY3KEDH",
+          "knowledgeBaseId": "V2RJQEGEIW",
+          "dataSourceId": "UTGGHNAAGJ",
+          "ingestionJobId": "I2EBORUYZ2",
           "status": "COMPLETE",
-          "startedAt": "2026-09-18 19:53:11.233373+00:00",
-          "updatedAt": "2026-09-18 19:55:43.255906+00:00",
+          "startedAt": "2026-09-19 17:34:43.375336+00:00",
+          "updatedAt": "2026-09-19 17:37:15.267366+00:00",
           "statistics": {
             "numberOfDocumentsScanned": 30,
             "numberOfMetadataDocumentsScanned": 0,
-            "numberOfNewDocumentsIndexed": 27,
-            "numberOfModifiedDocumentsIndexed": 3,
+            "numberOfNewDocumentsIndexed": 28,
+            "numberOfModifiedDocumentsIndexed": 2,
             "numberOfMetadataDocumentsModified": 0,
             "numberOfDocumentsDeleted": 0,
             "numberOfDocumentsFailed": 0,

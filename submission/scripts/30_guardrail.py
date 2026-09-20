@@ -176,7 +176,24 @@ def create_guardrail(cfg, state) -> dict:
         description="Northstar Assist launch-readiness validation")["version"]
     log(f"guardrail version {version} created", "ok")
 
-    detail = bedrock.get_guardrail(guardrailIdentifier=guardrail_id, guardrailVersion=version)
+    # Cutting a version is ALSO asynchronous, and this is easy to miss: while
+    # the version is CREATING, GetGuardrail returns the guardrail WITHOUT any
+    # of its policy blocks - no topicPolicy, no contentPolicy, nothing. Reading
+    # it back immediately therefore reports a fully-configured guardrail as
+    # having zero policies. Wait for the VERSION to be READY, not just the
+    # working draft.
+    for _ in range(30):
+        detail = bedrock.get_guardrail(guardrailIdentifier=guardrail_id,
+                                       guardrailVersion=version)
+        if detail["status"] == "READY":
+            break
+        if detail["status"] == "FAILED":
+            die(f"guardrail version {version} FAILED: {detail.get('statusReasons')}")
+        log(f"  version {version} status {detail['status']} - waiting")
+        time.sleep(5)
+    else:
+        die(f"guardrail version {version} did not reach READY in time")
+
     detail.pop("ResponseMetadata", None)
     write_evidence("guardrail_created.json", detail, subdir="discovery")
 
@@ -335,6 +352,45 @@ def set_guardrail_on_harness(cfg, state, attach: bool) -> dict:
     return after
 
 
+def policy_counts(detail: dict) -> dict:
+    """What a guardrail actually contains, per GetGuardrail."""
+    return {
+        "topics": len(detail.get("topicPolicy", {}).get("topics", [])),
+        "content_filters": len(detail.get("contentPolicy", {}).get("filters", [])),
+        "pii_entities": len(detail.get("sensitiveInformationPolicy", {})
+                            .get("piiEntities", [])),
+        "regexes": len(detail.get("sensitiveInformationPolicy", {}).get("regexes", [])),
+        "words": len(detail.get("wordPolicy", {}).get("words", [])),
+        "grounding_filters": len(detail.get("contextualGroundingPolicy", {})
+                                 .get("filters", [])),
+    }
+
+
+def show_guardrail_contents(cfg, state) -> None:
+    """Report what the DRAFT and the attached version each contain.
+
+    A guardrail that exists, is READY and is attached can still contain no
+    policies at all, in which case it silently allows everything. Attachment is
+    not configuration, so status has to report both.
+    """
+    if not state.get("guardrail_id"):
+        return
+    bedrock = client("bedrock", cfg)
+    for label in ("DRAFT", state.get("guardrail_version", "1")):
+        try:
+            detail = bedrock.get_guardrail(guardrailIdentifier=state["guardrail_id"],
+                                           guardrailVersion=label)
+        except ClientError as exc:
+            log(f"  {label}: cannot read ({exc})", "warn")
+            continue
+        counts = policy_counts(detail)
+        total = sum(counts.values())
+        level = "ok" if total else "err"
+        log(f"  {label}: status={detail.get('status')} policies={counts}", level)
+        if not total:
+            log(f"  {label} CONTAINS NO POLICIES - it blocks nothing", "err")
+
+
 def show_status(cfg, state) -> None:
     ctl = client("bedrock-agentcore-control", cfg)
     if not state.get("harness_id"):
@@ -359,6 +415,8 @@ def show_status(cfg, state) -> None:
             log(f"  {role_name} has {APPLY_POLICY_NAME}", "ok")
         except ClientError:
             log(f"  {role_name} is MISSING {APPLY_POLICY_NAME} - requests will 403", "warn")
+
+    show_guardrail_contents(cfg, state)
 
 
 def main() -> int:

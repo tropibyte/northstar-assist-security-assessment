@@ -1,0 +1,136 @@
+{
+  "_purpose": "Every wildcard surviving in the hardened policies must have an entry here, and every statement that grants MORE than the console original must be declared under intentional_grants. 22_iam_audit.py fails on anything undeclared. A missing entry is a failure, not a default pass -- that is the property the earlier draft lacked, which is how seven partial wildcards went uncounted while the summary claimed the gateway role had reached zero.",
+  "_classes": {
+    "UNAVOIDABLE": "The action does not support resource-level permissions. AWS rejects any Resource other than \"*\"; the grant cannot be scoped by policy at all.",
+    "SCOPED": "The `*` covers only an opaque suffix, sub-resource, or AWS-owned field of one specific named resource. The statement does not reach a second resource of that type.",
+    "NECESSARY": "The wildcard is broader than ideal and could not be narrowed. Requires an `evidence` pointer to an ablation run in which the narrowed or removed form was applied and the system demonstrably broke."
+  },
+  "_account_portable": "Patterns use * for the account field so the register survives a lab rebuild into a different account.",
+
+  "entries": {
+    "harness/BedrockMantleCallWithBearerToken": {
+      "classification": "UNAVOIDABLE",
+      "resource_pattern": "*",
+      "actions": ["bedrock-mantle:CallWithBearerToken"],
+      "reason": "Bearer-token exchange is an identity operation with no resource to name. `bedrock-mantle` is an undocumented internal service backing AgentCore inference; it publishes no resource-level ARNs for this action."
+    },
+    "harness/EcrPublicTokenAccess": {
+      "classification": "UNAVOIDABLE",
+      "resource_pattern": "*",
+      "actions": ["ecr-public:GetAuthorizationToken"],
+      "reason": "`ecr-public:GetAuthorizationToken` returns a registry-wide credential and is documented by AWS as not supporting resource-level permissions."
+    },
+    "harness/StsForEcrPublicPull": {
+      "classification": "UNAVOIDABLE",
+      "resource_pattern": "*",
+      "actions": ["sts:GetServiceBearerToken"],
+      "reason": "STS bearer-token issuance takes no resource. Constrained in practice by the ECR Public pull it authorises, not by ARN."
+    },
+    "harness/EcrManagedImageToken": {
+      "classification": "UNAVOIDABLE",
+      "resource_pattern": "*",
+      "actions": ["ecr:GetAuthorizationToken"],
+      "reason": "Same as the public variant: the authorization token is registry-scoped, and ECR does not accept a repository ARN on this action."
+    },
+    "harness/XRayTracingAccess": {
+      "classification": "UNAVOIDABLE",
+      "resource_pattern": "*",
+      "actions": ["xray:PutTraceSegments", "xray:PutTelemetryRecords", "xray:GetSamplingRules", "xray:GetSamplingTargets"],
+      "reason": "X-Ray segment ingestion has no resource model; AWS documents these four actions as requiring Resource \"*\". Write-only telemetry -- it cannot read traces."
+    },
+    "harness/CloudWatchMetricsPublish": {
+      "classification": "UNAVOIDABLE",
+      "resource_pattern": "*",
+      "actions": ["cloudwatch:PutMetricData"],
+      "reason": "PutMetricData supports no resource-level permission. Narrowed in practice by the cloudwatch:namespace condition key, which is the only available control."
+    },
+    "kb/CloudWatchWritePermissionStatement": {
+      "classification": "UNAVOIDABLE",
+      "resource_pattern": "*",
+      "actions": ["cloudwatch:PutMetricData"],
+      "reason": "Identical to the harness case: the knowledge base publishes ingestion metrics and PutMetricData cannot be resource-scoped."
+    },
+
+    "harness/EcrManagedImagePull": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:ecr:*:*:repository/harness-*",
+      "actions": ["ecr:BatchGetImage", "ecr:GetDownloadUrlForLayer", "ecr:BatchCheckLayerAvailability"],
+      "reason": "Repository prefix is pinned to `harness-*`. The remaining `*` is the ACCOUNT field, because AWS publishes AgentCore harness runtime images from an AWS-owned account whose ID is not documented. Read-only image pull; it cannot push or delete."
+    },
+    "harness/AgentCoreWorkloadIdentity": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:bedrock-agentcore:*:*:workload-identity-directory/default/workload-identity/harness_NorthstarAssist-*",
+      "actions": ["bedrock-agentcore:GetWorkloadAccessToken", "bedrock-agentcore:GetWorkloadAccessTokenForJWT"],
+      "reason": "Scoped to this harness's own workload identity; the `*` covers only the generated suffix AgentCore appends to the harness name. It reaches no other workload."
+    },
+    "harness/CloudWatchLogsGroup": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*",
+      "actions": ["logs:CreateLogGroup", "logs:DescribeLogStreams"],
+      "reason": "Restricted to AgentCore runtime log groups. Deliberately excludes /northstar-assist/model-invocations: the agent's identity must not be able to write to the log that records its own behaviour (threat R-02)."
+    },
+    "harness/CloudWatchLogsDescribeGroups": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*",
+      "actions": ["logs:DescribeLogGroups"],
+      "reason": "Metadata read over runtime log groups only. Does not reach the model-invocation log group."
+    },
+    "harness/CloudWatchLogsStream": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/*",
+      "actions": ["logs:CreateLogStream", "logs:PutLogEvents"],
+      "reason": "Write path for the runtime's own operational logs, scoped to runtime groups and their streams. The invocation audit log is out of reach by design."
+    },
+    "harness/CloudWatchLogsPutResourcePolicy": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:logs:*:*:log-group:/aws/bedrock-agentcore/runtimes/harness_NorthstarAssist-*",
+      "actions": ["logs:PutResourcePolicy"],
+      "reason": "Tightest of the four: this harness's own runtime log group only."
+    },
+    "gateway/GetGateway": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:bedrock-agentcore:*:*:gateway/northstar-assist-gateway-*",
+      "actions": ["bedrock-agentcore:GetGateway"],
+      "reason": "Scoped to this gateway; the `*` covers its own sub-resources. Read-only."
+    },
+    "kb/S3GetObjectStatement": {
+      "classification": "SCOPED",
+      "resource_pattern": "arn:aws:s3:::northstar-assist-kb-*/*",
+      "actions": ["s3:GetObject"],
+      "reason": "Objects within the corpus bucket only -- the textbook least-privilege shape for this action, and further constrained by an aws:ResourceAccount condition. The console generated this correctly; hardening leaves it untouched."
+    },
+
+    "harness/BedrockMantleInference": {
+      "classification": "NECESSARY",
+      "resource_pattern": "arn:aws:bedrock-mantle:*:*:*",
+      "actions": ["bedrock-mantle:CreateInference"],
+      "reason": "PENDING ABLATION. `bedrock-mantle` is an undocumented internal service with no published resource ARNs, so no narrower form can be written. Must be shown necessary by removal test before this entry is valid.",
+      "evidence": null
+    },
+    "gateway/GetConfigurationBundleVersion": {
+      "classification": "NECESSARY",
+      "resource_pattern": "arn:aws:bedrock-agentcore:*:*:configuration-bundle/*",
+      "actions": ["bedrock-agentcore:GetConfigurationBundleVersion"],
+      "reason": "PENDING ABLATION. No configuration bundle is configured for this system, so the statement may have no caller at all and should be removed outright rather than justified.",
+      "evidence": null
+    },
+    "gateway/AllowBedrockGetInferenceProfileForKnowledgeBase": {
+      "classification": "NECESSARY",
+      "resource_pattern": "arn:aws:bedrock:*:*:inference-profile/*",
+      "actions": ["bedrock:GetInferenceProfile"],
+      "reason": "PENDING ABLATION. Read-only metadata. Should be scoped to the embedding model's profile ARN; ablation determines whether any profile is read at all.",
+      "evidence": null
+    }
+  },
+
+  "intentional_grants": {
+    "gateway/AllowBedrockApplyGuardrailForKnowledgeBase": {
+      "added_resources": [
+        "arn:aws:bedrock:*:*:guardrail-profile/us.guardrail.v1:0"
+      ],
+      "reason": "A STANDARD-tier guardrail is invoked through a cross-Region guardrail PROFILE, and the profile ARN is regional and follows request routing. bedrock:ApplyGuardrail must therefore be granted on the profile in every region the profile routes to (us-east-1, us-east-2, us-west-2) or calls 403 intermittently. The console's sample policy grants only `guardrail/*` and cannot work at STANDARD tier.",
+      "net_effect": "Net narrowing. The guardrail dimension goes from `guardrail/*` -- every guardrail in the account -- to this one guardrail ID. The profile ARNs are a new resource TYPE that the original did not address, not a broadening of the original grant.",
+      "evidence": "docs/safety-controls.md, evidence/guardrail-probe/"
+    }
+  }
+}

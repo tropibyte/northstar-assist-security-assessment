@@ -1,16 +1,16 @@
 {
   "name": "northstar-assist-guardrail",
   "description": "Northstar Assist launch-readiness validation",
-  "guardrailId": "6yxbopugn44t",
-  "guardrailArn": "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+  "guardrailId": "wjbkvivpjms4",
+  "guardrailArn": "arn:aws:bedrock:us-east-1:118924230273:guardrail/wjbkvivpjms4",
   "version": "1",
   "status": "CREATING",
   "crossRegionDetails": {
     "guardrailProfileId": "us.guardrail.v1:0",
     "guardrailProfileArn": "arn:aws:bedrock:us-east-1:118924230273:guardrail-profile/us.guardrail.v1:0"
   },
-  "createdAt": "2026-09-18 21:12:32.887950+00:00",
-  "updatedAt": "2026-09-18 21:12:32.887950+00:00",
+  "createdAt": "2026-09-19 17:43:32.533079+00:00",
+  "updatedAt": "2026-09-19 17:43:32.533079+00:00",
   "statusReasons": [],
   "failureRecommendations": []
 }

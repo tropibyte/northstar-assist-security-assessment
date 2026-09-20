@@ -47,8 +47,15 @@ def probe(runtime, guardrail_id, version, text, source="INPUT",
                                  "qualifiers": ["grounding_source"]}})
     if query:
         content.append({"text": {"text": query, "qualifiers": ["query"]}})
-    content.append({"text": {"text": text,
-                             "qualifiers": ["guard_content"] if grounding_source else []}})
+    # NEVER send `qualifiers: []`. An explicitly empty qualifier list makes
+    # Bedrock treat the block as unguarded context rather than content to
+    # evaluate: ApplyGuardrail returns action=NONE with every policy unit at
+    # zero, exactly as if the guardrail were empty, and raises no error. Omit
+    # the key entirely when there is nothing to qualify.
+    guarded: dict = {"text": text}
+    if grounding_source:
+        guarded["qualifiers"] = ["guard_content"]
+    content.append({"text": guarded})
     try:
         r = runtime.apply_guardrail(
             guardrailIdentifier=guardrail_id, guardrailVersion=str(version),
@@ -100,11 +107,16 @@ def main() -> int:
                     help="with --responses, rebuild grounding_source and query from the "
                          "transcript so the GROUNDING/RELEVANCE filters are evaluated")
     ap.add_argument("--source", choices=["INPUT", "OUTPUT"], default="INPUT")
+    ap.add_argument("--version",
+                    help="probe a specific guardrail version instead of the one "
+                         "in state.json. Pass DRAFT to probe the working draft -- "
+                         "useful when a version may have been cut before its "
+                         "policies finished materialising.")
     args = ap.parse_args()
 
     cfg, state = load_config(), load_state()
     need(state, "guardrail_id")
-    version = state.get("guardrail_version", "1")
+    version = args.version or state.get("guardrail_version", "1")
     runtime = client("bedrock-runtime", cfg)
 
     cases: list[tuple[str, str, str | None, str | None]] = []

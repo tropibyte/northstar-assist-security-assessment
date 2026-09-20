@@ -1,22 +1,37 @@
 {
   "bucket": "northstar-assist-kb-41071520",
-  "kb_id": "MHJCWFFIBH",
+  "kb_id": "V2RJQEGEIW",
   "ingestion_statistics": {
-    "numberOfDocumentsScanned": 30,
+    "numberOfDocumentsScanned": 31,
     "numberOfMetadataDocumentsScanned": 0,
-    "numberOfNewDocumentsIndexed": 27,
-    "numberOfModifiedDocumentsIndexed": 3,
+    "numberOfNewDocumentsIndexed": 1,
+    "numberOfModifiedDocumentsIndexed": 0,
     "numberOfMetadataDocumentsModified": 0,
     "numberOfDocumentsDeleted": 0,
     "numberOfDocumentsFailed": 0,
     "numberOfDocumentsSkipped": 0
   },
   "s3_object_count": 30,
-  "index_record_count": 30,
+  "index_record_count": 32,
   "status_counts": {
-    "INDEXED": 30
+    "INDEXED": 30,
+    "NOT_FOUND": 2
   },
   "missing_from_index": [],
-  "non_indexed_status": [],
-  "stale_in_index": []
+  "non_indexed_status": [
+    {
+      "key": "northstar-knowledge-base/_ablation_probe_1789855317.txt",
+      "status": "NOT_FOUND",
+      "reason": null
+    },
+    {
+      "key": "northstar-knowledge-base/_ablation_probe_1789841306.txt",
+      "status": "NOT_FOUND",
+      "reason": null
+    }
+  ],
+  "stale_in_index": [
+    "northstar-knowledge-base/_ablation_probe_1789841306.txt",
+    "northstar-knowledge-base/_ablation_probe_1789855317.txt"
+  ]
 }

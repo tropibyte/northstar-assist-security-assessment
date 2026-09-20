@@ -1,19 +1,19 @@
 {
-  "harnessId": "NorthstarAssist-MUUuZ1Tr6j",
+  "harnessId": "NorthstarAssist-0c9NNcCqVr",
   "harnessName": "NorthstarAssist",
-  "arn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:harness/NorthstarAssist-MUUuZ1Tr6j",
+  "arn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:harness/NorthstarAssist-0c9NNcCqVr",
   "status": "UPDATING",
-  "harnessVersion": "5",
-  "executionRoleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf",
-  "createdAt": "2026-09-18 20:05:04.461836+00:00",
-  "updatedAt": "2026-09-18 21:51:42.208347+00:00",
+  "harnessVersion": "2",
+  "executionRoleArn": "arn:aws:iam::118924230273:role/service-role/AmazonBedrockAgentCoreHarnessDefaultServiceRole-4ecgi",
+  "createdAt": "2026-09-19 17:41:01.738002+00:00",
+  "updatedAt": "2026-09-19 17:43:45.754549+00:00",
   "model": {
     "bedrockModelConfig": {
       "modelId": "us.amazon.nova-2-lite-v1:0",
       "apiFormat": "converse_stream",
       "additionalParams": {
         "guardrailConfig": {
-          "guardrailIdentifier": "arn:aws:bedrock:us-east-1:118924230273:guardrail/6yxbopugn44t",
+          "guardrailIdentifier": "arn:aws:bedrock:us-east-1:118924230273:guardrail/wjbkvivpjms4",
           "guardrailVersion": "1",
           "trace": "enabled"
         }
@@ -28,10 +28,10 @@
   "tools": [
     {
       "type": "agentcore_gateway",
-      "name": "northstar-assist-gateway-1jkdshz4iy",
+      "name": "northstar-assist-gateway-lhirtedegn",
       "config": {
         "agentCoreGateway": {
-          "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-1jkdshz4iy",
+          "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:gateway/northstar-assist-gateway-lhirtedegn",
           "outboundAuth": {
             "awsIam": {}
           }
@@ -53,17 +53,16 @@
   },
   "environment": {
     "agentCoreRuntimeEnvironment": {
-      "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:runtime/harness_NorthstarAssist-bLGD1JFib7",
+      "agentRuntimeArn": "arn:aws:bedrock-agentcore:us-east-1:118924230273:runtime/harness_NorthstarAssist-bzHBHz8Y0V",
       "agentRuntimeName": "harness_NorthstarAssist",
-      "agentRuntimeId": "harness_NorthstarAssist-bLGD1JFib7",
+      "agentRuntimeId": "harness_NorthstarAssist-bzHBHz8Y0V",
       "lifecycleConfiguration": {
         "idleRuntimeSessionTimeout": 900,
         "maxLifetime": 28800
       },
       "networkConfiguration": {
         "networkMode": "PUBLIC"
-      },
-      "filesystemConfigurations": []
+      }
     }
   },
   "environmentVariables": {},

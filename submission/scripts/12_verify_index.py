@@ -136,10 +136,23 @@ def main() -> int:
     }
     write_evidence("index_verification.json", report, subdir="discovery")
 
-    retrievable = len(indexed_keys & bucket_keys) - len(not_indexed_status)
+    # Retrievable = objects that are BOTH present in S3 and INDEXED. Subtracting
+    # every non-INDEXED record double-counts, because a record whose source
+    # object has been deleted is not in bucket_keys and was never in the
+    # intersection: two stale records made a healthy 30/30 corpus read 28/30.
+    # Only a non-INDEXED record whose object IS still in the bucket reduces it.
+    unusable_present = {doc_key(d) for d in not_indexed_status
+                        if doc_key(d) in bucket_keys}
+    retrievable = len((indexed_keys & bucket_keys) - unusable_present)
     log(f"documents actually retrievable by the agent: {retrievable} of {len(bucket_keys)}",
         "ok" if retrievable == len(bucket_keys) else "warn")
-    return 0 if not missing and not not_indexed_status else 2
+
+    # A record whose S3 object is gone is stale bookkeeping, not a corpus fault.
+    blocking = [d for d in not_indexed_status if doc_key(d) in bucket_keys]
+    if extra and not blocking:
+        log(f"{len(extra)} stale index record(s) refer to deleted objects; they are "
+            f"not retrievable and do not affect the corpus", "warn")
+    return 0 if not missing and not blocking else 2
 
 
 if __name__ == "__main__":
