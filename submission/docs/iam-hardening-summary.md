@@ -86,8 +86,8 @@ Two further faults let it go unnoticed:
    default pass.
 3. **`tests/test_no_widening.py`**, an offline regression test needing no AWS
    credentials. It replays the captured console policies through the real
-   narrowing pass and asserts nothing widens: **8 policies, 37 statements, 0
-   widened.**
+   narrowing pass and asserts nothing widens: **16 policies, 74 statements,
+   0 widened** — both sessions' captures.
 4. **A rebuild.** The environment was recreated on 19 September, the corrected
    hardening applied, and the result verified against live IAM.
 
@@ -151,20 +151,36 @@ granted four, and the fourth would have been an unused permission.
 
 ## 2. Roles reviewed
 
-| Role | Purpose | Statements removed | Statements narrowed | Wildcards before | Wildcards after |
-| --- | --- | --- | --- | --- | --- |
-| `AmazonBedrockAgentCoreHarnessDefaultServiceRole-fpraf` | Harness execution — invoke model, apply guardrail, invoke gateway, write logs | **7** | 5 | 6 | 6 (all justified, §4) |
-| `AmazonBedrockAgentCoreGatewayDefaultServiceRole1789761291328` | Gateway service — retrieve from the knowledge base | **2** | 3 | 2 | **0** |
-| `AmazonBedrockExecutionRoleForKnowledgeBase_pcpa3` | KB service — read S3, invoke the embedding model | 1 action | 1 | 2 | 2 (both justified, §4) |
+Figures are the **rebuilt, verified state** of 19 September, taken from
+`iam/iam_after.json`. Role names carry that session's generated suffixes; the
+first submission's roles (`-fpraf`, `_pcpa3`, `…1789761291328`) appear in
+`iam/session1-2026-09-18/` and in the quoted diffs in §3.
 
-**Totals: 9 statements removed, 9 narrowed or split, 1 action stripped, 28
-individual permissions withdrawn, 8 bare wildcards and 7 partial wildcards
-surviving, each justified in §4.**
+| Role | Purpose | Statements removed | Statements narrowed | Wildcards surviving |
+| --- | --- | --- | --- | --- |
+| `AmazonBedrockAgentCoreHarnessDefaultServiceRole-4ecgi` | Harness execution — invoke model, apply guardrail, invoke gateway, write logs | **8** | 3 | 14 |
+| `AmazonBedrockAgentCoreGatewayDefaultServiceRole1789839392565` | Gateway service — retrieve from the knowledge base | **5** | 2 | 1 |
+| `AmazonBedrockExecutionRoleForKnowledgeBase_y7cmq` | KB service — read S3, invoke the embedding model | **1** | 0 | 2 |
 
-⚠ The "wildcards after" column counts only bare `Resource: "*"`. It does not
-count partial wildcards (a `*` inside an otherwise-scoped ARN), which is why
-the gateway row reads 0 while three partial wildcards remain — see §4b. And
-three of the harness row's statements were **widened**, not narrowed; see §0.
+**Totals: 14 statements removed, 5 narrowed, and
+17 wildcard resources surviving (7 bare,
+10 partial) — every one carrying a register entry.
+Statements widened: 0.**
+
+The knowledge-base role's single removal is the whole
+`MarketplaceOperationsFromBedrockFor3pModels` statement. The first submission
+stripped only `aws-marketplace:Unsubscribe` from it and kept
+`Subscribe`/`ViewSubscriptions` on `*`; testing showed Titan embedding needs
+none of them, so the statement is gone (§4.2).
+
+Both wildcard kinds are counted. The first submission's table counted only bare
+`Resource: "*"`, which is how it reported the gateway role at zero while three
+partial wildcards remained; `22_iam_audit.py` now counts them separately and
+fails if any lacks a justification.
+
+Five of those removals were not part of the original narrowing design. They
+were statements the first submission kept and labelled "loose", which ablation
+then showed had no caller at all — see §4.2.
 
 ### A finding about where the permissions actually live
 
@@ -187,6 +203,20 @@ did exactly that.
 ---
 
 ## 3. Changes applied
+
+**How to read this section.** It documents the narrowing pass statement by
+statement, and the quoted policy documents are the first submission's — that is
+where each change was first derived, and the identifiers (`-fpraf`, `_pcpa3`,
+policy suffixes, the guardrail and gateway IDs) are from that session. The
+logic is unchanged in the rebuild; only the generated names differ.
+
+Two changes described below were **superseded** by the rebuild, and each says
+so where it appears: `AllowBedrockApplyGuardrailForKnowledgeBase` on the gateway
+role and the marketplace statement on the knowledge-base role were not narrowed
+in the end — they were removed outright, after ablation showed neither had a
+caller (§4.2). The current state of every statement is §4 and
+`iam/iam_after.json`, both generated from the deployed policies.
+
 
 ### 3.1 Harness execution role
 
@@ -324,7 +354,14 @@ inference the design never intended. This is why the script resolves targets
 **per role** rather than globally: "the model" means different things to the
 harness and to the gateway.
 
-#### NARROWED — `AllowBedrockApplyGuardrailForKnowledgeBase`
+#### NARROWED, then REMOVED — `AllowBedrockApplyGuardrailForKnowledgeBase`
+
+> **Superseded.** The narrowing below is what the first submission applied.
+> In the rebuild this statement was **removed entirely**: the guardrail is
+> applied by the *harness*, through its own scoped
+> `NorthstarAssistApplyGuardrail` inline policy, and the gateway role's copy
+> had no caller. Removal was verified with a must-block prompt as well as a
+> benign one, confirming the guardrail still intervenes end to end (§4.2).
 
 From `guardrail/*` to the specific guardrail.
 
@@ -333,7 +370,14 @@ From `guardrail/*` to the specific guardrail.
 Already well scoped by the console — `bedrock:InvokeModel` on the exact Titan
 ARN, `s3:ListBucket` and `s3:GetObject` on the exact bucket. One change needed.
 
-#### ACTION-REMOVED — `aws-marketplace:Unsubscribe`
+#### ACTION-REMOVED, then statement REMOVED — `aws-marketplace:Unsubscribe`
+
+> **Superseded.** The first submission stripped `Unsubscribe` and kept
+> `Subscribe` and `ViewSubscriptions` on `"*"`. In the rebuild the **whole
+> statement was removed**: Titan Text Embeddings v2 is an AWS first-party
+> model needing no Marketplace agreement, and a real ingestion job with a
+> planted document indexed cleanly without the grant
+> (`scanned=31 new=1 failed=0`) — see §4.2.
 
 **Before:** `["aws-marketplace:Subscribe", "ViewSubscriptions", "Unsubscribe"]` on `"*"`
 **After:** `["aws-marketplace:Subscribe", "ViewSubscriptions"]` on `"*"`
@@ -379,7 +423,9 @@ The hardened roles retain **17 wildcard resources** across 15 statements: 7 bare
 Two classifications are permitted for a surviving wildcard:
 
 - **UNAVOIDABLE** — the action does not support resource-level permissions. AWS rejects any `Resource` but `"*"`; the grant cannot be scoped by policy at all.
-- **SCOPED** — the `*` covers only an opaque suffix or sub-resource of one specific named resource. The statement does not reach a second resource of that type.
+- **SCOPED** — the `*` is bounded to a resource path this system owns, or to a field that cannot be pinned, rather than being open across the account.
+
+Worth being precise about what SCOPED does *not* claim. Two of these reach further than "one named resource": `/aws/bedrock-agentcore/runtimes/*` covers every AgentCore runtime log group in the account, and `EcrManagedImagePull` wildcards the **account** field. Both are console defaults the narrowing pass deliberately left at their original scope — narrowing the first is precisely what produced the original regression — and each register entry states its own actual reach rather than inheriting the class definition.
 
 A third class, **NECESSARY** — broader than ideal but proven required — is supported by the register and requires an evidence pointer to an ablation run. **No statement needed it.** Every candidate for it was removed outright instead (§4.2).
 
@@ -423,7 +469,11 @@ The marketplace test is the one worth reading closely. `aws-marketplace:Subscrib
 
 This also closes out a claim withdrawn after the first review. I said then that the harness role's missing marketplace permissions might explain the Anthropic model failures, and had to withdraw it as untested. I still cannot assert that causation — `agreementAvailability` is an account-level state — but I can now say that Titan embedding does not need the grant, because it was removed and a document was embedded anyway.
 
-### 4.3 Reading a removal result honestly
+### 4.3 One wildcard justified by shape, not by experiment
+
+`BedrockMantleCallWithBearerToken` keeps `Resource: "*"` on the resource-shape argument alone: bearer-token exchange names no resource, and `bedrock-mantle` publishes no resource-level ARNs for it. **It was not ablated** — and its sibling `BedrockMantleInference` was, and proved unnecessary. That is reason enough to say so plainly rather than let the UNAVOIDABLE label imply more testing than was done. The same holds for the other six UNAVOIDABLE statements: they are justified by the API's constraints, not by removal tests. Where a wildcard *could* be removed, it was.
+
+### 4.4 Reading a removal result honestly
 
 A **failure** after removal is strong evidence of necessity. A **pass** is weaker: an AgentCore runtime caches its role credentials, so a permission withdrawn seconds earlier may still be in force. Every removal here was therefore confirmed a second time — applied permanently, left for 120 seconds, then retested with three smoke runs **and** a must-block prompt to confirm the guardrail still intervened. Verifying a removed `ApplyGuardrail` grant with a prompt that never trips the guardrail would have repeated the original mistake: testing the path where the permission is not used.
 
@@ -503,7 +553,8 @@ python submission/tests/test_no_widening.py
 
 The first re-derives the PASS from `iam/before/` versus `iam/after/`. The
 second replays every captured console policy through the real narrowing pass
-and asserts nothing widens — 8 policies, 37 statements, 0 widened.
+and asserts nothing widens — 16 policies, 74 statements, 0 widened,
+covering this rebuild and the first submission's originals together.
 
 And because a detector that has never caught anything is only a claim:
 

@@ -177,7 +177,10 @@ def resolve_targets(state: dict, cfg: dict, role_kind: str = "harness") -> dict[
     else:
         model_arns.append(f"arn:aws:bedrock:{region}::foundation-model/{model_id}")
 
-    embedding_arns = [f"arn:aws:bedrock:{region}::foundation-model/{cfg['embedding_model_id']}"]
+    # .get, not [], so a partial config degrades to the documented default
+    # instead of raising KeyError deep inside a replay.
+    embedding_model = cfg.get("embedding_model_id", "amazon.titan-embed-text-v2:0")
+    embedding_arns = [f"arn:aws:bedrock:{region}::foundation-model/{embedding_model}"]
 
     # Only the harness generates. The gateway and knowledge base roles touch
     # models solely for retrieval-side embedding, so granting them the

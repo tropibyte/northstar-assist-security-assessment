@@ -573,7 +573,7 @@ cancel foundation-model subscriptions account-wide.
 *Mitigation:* **Applied and verified.** 28 actions removed; model invocation
 narrowed to one inference profile plus its three real regional ARNs (read from
 the profile, not guessed); guardrail scoped to one guardrail and its
-cross-Region profile; `Unsubscribe` stripped; agentic-retrieval permissions
+cross-Region profile; the **whole `aws-marketplace` statement removed**, not just `Unsubscribe` — ablation showed Titan embedding needs none of it; agentic-retrieval permissions
 removed from the gateway role. Post-change verification confirmed the agent
 still answers with retrieval. Every surviving wildcard is on an action AWS does
 not support resource-level permissions for, and is individually justified in

@@ -62,8 +62,20 @@ def _role_kind(role_name: str) -> str:
 def _load_context() -> tuple[dict, dict]:
     state = json.loads((SUBMISSION / "evidence" / "state.json").read_text(encoding="utf-8"))
     cfg_path = SUBMISSION / "config.json"
-    cfg = (json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists()
-           else {"model_id": state.get("harness_model_id", "us.amazon.nova-2-lite-v1:0")})
+    # config.json is gitignored -- it names a real bucket -- so on a fresh clone
+    # this fallback IS the configuration. It must therefore carry every key the
+    # narrowing pass reads, or the test the documentation advertises as runnable
+    # without AWS dies with a KeyError on someone else's machine. Values match
+    # the committed evidence.
+    fallback = {
+        "model_id": state.get("harness_model_id", "us.amazon.nova-2-lite-v1:0"),
+        "embedding_model_id": "amazon.titan-embed-text-v2:0",
+        "region": state.get("region", "us-east-1"),
+        "bucket": state.get("bucket", "northstar-assist-kb-41071520"),
+        "log_group": state.get("log_group", "/northstar-assist/model-invocations"),
+    }
+    cfg = (json.loads(cfg_path.read_text(encoding="utf-8"))
+           if cfg_path.exists() else fallback)
     return state, cfg
 
 

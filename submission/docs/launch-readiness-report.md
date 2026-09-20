@@ -359,6 +359,8 @@ confirmed the agent still answers with retrieval. Every surviving wildcard is on
 an action AWS does not support resource-level permissions for, individually
 justified in `docs/iam-hardening-summary.md`.
 
+The rebuild went further and removed the statement outright, `Subscribe` and `ViewSubscriptions` included: Titan Text Embeddings v2 needs no Marketplace agreement, and an ingestion job with a planted document indexed it cleanly with the grant absent.
+
 **Operator lockout is a real containment risk.** Mid-assessment, credentials
 were revoked by policy, denying `GetHarness`, `ListHarnesses` and
 `ApplyGuardrail`. **Live agent infrastructure kept running while the operator

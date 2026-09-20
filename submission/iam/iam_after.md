@@ -1,6 +1,6 @@
 # IAM after-state audit
 
-Source: **captured iam/before vs iam/after** | Account: `n/a` | Generated: 2026-09-20T00:01:53+00:00
+Source: **captured iam/before vs iam/after** | Account: `n/a` | Generated: 2026-09-20T01:03:24+00:00
 
 **Verdict: PASS**
 
